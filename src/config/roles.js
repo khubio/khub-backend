@@ -7,7 +7,7 @@ const groupAllRoles = {
   owner: [],
   coOwner: [],
   member: [],
-  kickOff: [],
+  blacklist: [],
 };
 
 const roles = Object.keys(allRoles);

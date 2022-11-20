@@ -47,6 +47,7 @@ const queryMembers = async (groupId, filter, option) => {
     path: 'UserGroup',
     match: {
       groupId: groupId,
+      role: { $ne: 'blacklist' },
     }
   }).paginate(filter, option);
   return member;
