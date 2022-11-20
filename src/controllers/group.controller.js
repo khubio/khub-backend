@@ -22,7 +22,7 @@ const createGroup = catchAsync(async (req, res) => {
 const createUserGroup = catchAsync(async (req, res) => {
   const userGroup = await userGroup.createUserGroup(req.body);
   res.status(httpStatus.CREATED).send(userGroup);
-})
+});
 
 const getGroups = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name']);
@@ -55,7 +55,7 @@ const deleteUserGroup = catchAsync(async (req, res) => {
   const { userId } = req.body
   await userGroupService.deleteUserGroupById(userId, groupId);
   res.status(httpStatus.NO_CONTENT).send();
-})
+});
 
 const deleteGroup = catchAsync(async (req, res) => {
   const { groupId } = req.params;
@@ -64,7 +64,7 @@ const deleteGroup = catchAsync(async (req, res) => {
   await Promise.all(members.map(async (member) => await userGroupService.deleteUserGroupById(groupId, member._id)));
   await groupService.deleteGroupById(groupId);
   res.status(httpStatus.NO_CONTENT).send();
-})
+});
 
 module.exports = {
   createGroup,
@@ -75,4 +75,4 @@ module.exports = {
   updateUserGroupById,
   deleteUserGroup,
   deleteGroup,
-}
+};

@@ -9,7 +9,7 @@ const ApiError = require('../utils/ApiError');
  */
 const createUserGroup = async (userGroupBody) => {
   return UserGroup.create(userGroupBody);
-}
+};
 
 /**
  *
@@ -19,7 +19,7 @@ const createUserGroup = async (userGroupBody) => {
  */
 const getUserGroupById = async (userId, groupId) => {
   return UserGroup.findOne({ userId, groupId });
-}
+};
 
 /**
  * Get group owner of a group
@@ -35,7 +35,7 @@ const getGroupOwner = async (groupId) => {
     }
   });
   return groupOwner;
-}
+};
 
 /**
  * Query for members in a group
@@ -51,7 +51,7 @@ const queryMembers = async (groupId, filter, option) => {
     }
   }).paginate(filter, option);
   return member;
-}
+};
 
 /**
  * update userGroup by userId and groupId
@@ -68,7 +68,7 @@ const updateUserGroupById = async (userId, groupId, updateBody) => {
   Object.assign(userGroup, updateBody);
   await userGroup.save();
   return userGroup;
-}
+};
 
 /**
  * Delete userGroup by userId and groupId
@@ -93,5 +93,5 @@ module.exports = {
   queryMembers,
   updateUserGroupById,
   deleteUserGroupById,
-}
+};
 
