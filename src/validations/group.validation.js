@@ -29,13 +29,13 @@ const getGroups = {
 
 const getGroupOwner = {
   params: Joi.object().keys({
-    groupId: Joi.string().custom(objectId)
+    groupId: Joi.string().custom(objectId),
   }),
 };
 
 const queryMembers = {
   params: Joi.object().keys({
-    groupId: Joi.string().custom(objectId)
+    groupId: Joi.string().custom(objectId),
   }),
   query: Joi.object().keys({
     role: Joi.string(),
@@ -52,7 +52,7 @@ const updateUserGroupById = {
   body: Joi.object().keys({
     userId: Joi.string().custom(objectId),
     role: Joi.string().valid('owner', 'coOwner', 'member', 'blacklist'),
-  })
+  }),
 };
 
 const deleteUserGroup = {

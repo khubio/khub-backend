@@ -6,7 +6,12 @@ const { roles } = require('../config/roles');
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
       type: String,
       required: true,
       trim: true,
@@ -45,10 +50,12 @@ const userSchema = mongoose.Schema(
       default: false,
     },
     groups: {
-      type: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'UserGroup',
-      }],
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'UserGroup',
+        },
+      ],
     },
   },
   {

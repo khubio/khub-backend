@@ -31,6 +31,11 @@ const getGroups = catchAsync(async (req, res) => {
   res.send(results);
 });
 
+const getGroup = catchAsync(async (req, res) => {
+  const group = await groupService.getGroup(req.params.groupId);
+  res.send(group);
+});
+
 const getGroupOwner = catchAsync(async (req, res) => {
   const groupOwner = await groupService.getGroupOwner(req.params.groupId);
   res.send(groupOwner);

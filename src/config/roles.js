@@ -4,9 +4,9 @@ const allRoles = {
 };
 
 const groupAllRoles = {
-  owner: [],
-  coOwner: [],
-  member: [],
+  owner: ['getMembers', 'manageMembers'],
+  coOwner: ['getMembers'],
+  member: ['getMembers'],
   blacklist: [],
 };
 

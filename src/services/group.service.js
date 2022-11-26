@@ -31,7 +31,7 @@ const queryGroups = async (filter, options) => {
  * @return {Promise<Group>}
  */
 const getGroupById = async (id) => {
-  const group = await Group.findById(id);
+  const group = await Group.findById(id).populate('UserGroup');
   return group;
 }
 
