@@ -14,6 +14,6 @@ router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);
 
 router.route('/:groupId/members').get(groupController.queryMembers);
 
-router.route('/:groupId').get(groupController.get);
+// router.route('/:groupId').get(groupController.get);
 
 module.exports = router;
