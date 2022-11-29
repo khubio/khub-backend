@@ -9,7 +9,7 @@ const ApiError = require('../utils/ApiError');
  */
 const createGroup = async (groupBody) => {
   return Group.create(groupBody);
-}
+};
 
 /**
  * Query for groups
@@ -23,7 +23,23 @@ const createGroup = async (groupBody) => {
 const queryGroups = async (filter, options) => {
   const groups = await Group.paginate(filter, options);
   return groups;
-}
+};
+
+/**
+ *
+ * @param {string} userId
+ * @returns {Promise<QueryResult>}
+ */
+const getGroupsByUserId = async (userId) => {
+  const groups = await Group.populate({
+    path: 'UserGroup',
+    match: {
+      user: userId,
+      role: { $ne: 'blacklist' },
+    },
+  });
+  return groups;
+};
 
 /**
  * Get group by id
@@ -33,7 +49,7 @@ const queryGroups = async (filter, options) => {
 const getGroupById = async (id) => {
   const group = await Group.findById(id).populate('UserGroup');
   return group;
-}
+};
 
 /**
  * update group by id
@@ -50,7 +66,7 @@ const updateGroupById = async (id, updateBody) => {
   Object.assign(group, updateBody);
   await group.save();
   return group;
-}
+};
 
 /**
  * Delete group by id
@@ -69,7 +85,8 @@ const deleteGroupById = async (groupId) => {
 module.exports = {
   createGroup,
   queryGroups,
+  getGroupsByUserId,
   getGroupById,
   updateGroupById,
-  deleteGroupById
+  deleteGroupById,
 };

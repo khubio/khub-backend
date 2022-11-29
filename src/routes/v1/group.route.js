@@ -7,7 +7,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(validate(groupValidation.getGroups), groupController.getGroups)
+  .get(validate(groupValidation.getGroupsByUserId), groupController.getGroupsByUserId)
   .post(validate(groupValidation.createGroup), groupController.createGroup);
 
 router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);

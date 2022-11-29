@@ -8,19 +8,21 @@ const createGroup = catchAsync(async (req, res) => {
   const group = await groupService.createGroup({ name });
   const groupId = group._id;
 
-  await Promise.all(members.map(async (member) => {
-    return await userGroupService.createUserGroup({
-      group: groupId,
-      user: member.userId,
-      role: member.role,
-    });
-  }));
+  await Promise.all(
+    members.map((member) => {
+      return userGroupService.createUserGroup({
+        group: groupId,
+        user: member.userId,
+        role: member.role,
+      });
+    })
+  );
 
   res.status(httpStatus.CREATED).send(group);
 });
 
 const createUserGroup = catchAsync(async (req, res) => {
-  const userGroup = await userGroup.createUserGroup(req.body);
+  const userGroup = await userGroupService.createUserGroup(req.body);
   res.status(httpStatus.CREATED).send(userGroup);
 });
 
@@ -29,6 +31,11 @@ const getGroups = catchAsync(async (req, res) => {
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const results = await groupService.queryGroups(filter, options);
   res.send(results);
+});
+
+const getGroupsByUserId = catchAsync(async (req, res) => {
+  const groups = await groupService.getGroupByUserId(req.body.userId);
+  res.send(groups);
 });
 
 const getGroup = catchAsync(async (req, res) => {
@@ -57,7 +64,7 @@ const updateUserGroupById = catchAsync(async (req, res) => {
 
 const deleteUserGroup = catchAsync(async (req, res) => {
   const { groupId } = req.params;
-  const { userId } = req.body
+  const { userId } = req.body;
   await userGroupService.deleteUserGroupById(userId, groupId);
   res.status(httpStatus.NO_CONTENT).send();
 });
@@ -66,7 +73,7 @@ const deleteGroup = catchAsync(async (req, res) => {
   const { groupId } = req.params;
   const members = await userGroupService.queryMembers(groupId);
 
-  await Promise.all(members.map(async (member) => await userGroupService.deleteUserGroupById(groupId, member._id)));
+  await Promise.all(members.map((member) => userGroupService.deleteUserGroupById(groupId, member._id)));
   await groupService.deleteGroupById(groupId);
   res.status(httpStatus.NO_CONTENT).send();
 });
@@ -75,6 +82,8 @@ module.exports = {
   createGroup,
   createUserGroup,
   getGroups,
+  getGroupsByUserId,
+  getGroup,
   getGroupOwner,
   queryMembers,
   updateUserGroupById,

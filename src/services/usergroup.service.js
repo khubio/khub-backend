@@ -30,9 +30,9 @@ const getGroupOwner = async (groupId) => {
   const groupOwner = await User.findOne().populate({
     path: 'UserGroup',
     match: {
-      groupId: groupId,
+      group: groupId,
       role: 'owner',
-    }
+    },
   });
   return groupOwner;
 };
@@ -46,9 +46,9 @@ const queryMembers = async (groupId, filter, option) => {
   const member = await User.populate({
     path: 'UserGroup',
     match: {
-      groupId: groupId,
+      group: groupId,
       role: { $ne: 'blacklist' },
-    }
+    },
   }).paginate(filter, option);
   return member;
 };
@@ -85,7 +85,6 @@ const deleteUserGroupById = async (userId, groupId) => {
   return userGroup;
 };
 
-
 module.exports = {
   createUserGroup,
   getUserGroupById,
@@ -94,4 +93,3 @@ module.exports = {
   updateUserGroupById,
   deleteUserGroupById,
 };
-

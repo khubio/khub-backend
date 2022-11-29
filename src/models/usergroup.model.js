@@ -15,7 +15,7 @@ const userGroupSchema = mongoose.Schema(
       type: String,
       enum: groupRoles,
       default: 'member',
-    }
+    },
   },
   {
     timeStamps: true,

@@ -4,10 +4,12 @@ const { objectId } = require('./custom.validation');
 const createGroup = {
   body: Joi.object().keys({
     name: Joi.string().required(),
-    members: Joi.object().keys({
-      user: Joi.string().custom(objectId),
-      role: Joi.string().required().valid('owner', 'coOwner', 'member'),
-    }),
+    members: Joi.array().items(
+      Joi.object().keys({
+        user: Joi.string().custom(objectId),
+        role: Joi.string().required().valid('owner', 'coOwner', 'member'),
+      })
+    ),
   }),
 };
 
@@ -24,6 +26,18 @@ const getGroups = {
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+  }),
+};
+
+const getGroupsByUserId = {
+  query: Joi.object().keys({
+    name: Joi.string().required(),
+    sortBy: Joi.string(),
+    limit: Joi.number().integer(),
+    page: Joi.number().integer(),
+  }),
+  body: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
   }),
 };
 
@@ -74,6 +88,7 @@ module.exports = {
   createGroup,
   createUserGroup,
   getGroups,
+  getGroupsByUserId,
   getGroupOwner,
   queryMembers,
   updateUserGroupById,
