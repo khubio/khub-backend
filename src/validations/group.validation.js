@@ -6,7 +6,7 @@ const createGroup = {
     name: Joi.string().required(),
     members: Joi.array().items(
       Joi.object().keys({
-        user: Joi.string().custom(objectId),
+        userId: Joi.string().custom(objectId),
         role: Joi.string().required().valid('owner', 'coOwner', 'member'),
       })
     ),
@@ -22,7 +22,7 @@ const createUserGroup = {
 
 const getGroups = {
   query: Joi.object().keys({
-    name: Joi.string().required(),
+    name: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -31,13 +31,13 @@ const getGroups = {
 
 const getGroupsByUserId = {
   query: Joi.object().keys({
-    name: Joi.string().required(),
+    name: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
   }),
   body: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string().custom(objectId).required(),
   }),
 };
 

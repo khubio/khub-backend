@@ -9,14 +9,16 @@ const groupSchema = mongoose.Schema(
       trim: true,
     },
     users: {
-      type: [{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'UserGroup',
-      }]
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'UserGroup',
+        },
+      ],
     },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

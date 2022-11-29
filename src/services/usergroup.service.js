@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { UserGroup, User } = require('../models');
+const { UserGroup, User, Group } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,7 +8,18 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<UserGroup>}
  */
 const createUserGroup = async (userGroupBody) => {
-  return UserGroup.create(userGroupBody);
+  const userGroup = await UserGroup.create(userGroupBody);
+  await Group.findByIdAndUpdate(userGroupBody.group, {
+    $push: {
+      users: userGroup._id,
+    },
+  });
+  await User.findByIdAndUpdate(userGroupBody.user, {
+    $push: {
+      groups: userGroup._id,
+    },
+  });
+  return userGroup;
 };
 
 /**
