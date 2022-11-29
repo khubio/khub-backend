@@ -20,12 +20,33 @@ const createUserGroup = {
   }),
 };
 
+const updateGroup = {
+  params: Joi.object().keys({
+    groupId: Joi.string().custom(objectId),
+  }),
+  body: Joi.object().keys({
+    name: Joi.string(),
+    members: Joi.array().items(
+      Joi.object().keys({
+        userId: Joi.string().custom(objectId),
+        role: Joi.string().required().valid('owner', 'coOwner', 'member'),
+      })
+    ),
+  }),
+};
+
 const getGroups = {
   query: Joi.object().keys({
     name: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+  }),
+};
+
+const getGroupById = {
+  params: Joi.object().keys({
+    groupId: Joi.string().custom(objectId),
   }),
 };
 
@@ -94,4 +115,6 @@ module.exports = {
   updateUserGroupById,
   deleteUserGroup,
   deleteGroup,
+  updateGroup,
+  getGroupById,
 };

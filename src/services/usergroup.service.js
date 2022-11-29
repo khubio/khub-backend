@@ -39,7 +39,7 @@ const getUserGroupById = async (userId, groupId) => {
  */
 const getGroupOwner = async (groupId) => {
   const groupOwner = await User.findOne().populate({
-    path: 'UserGroup',
+    path: 'groups',
     match: {
       group: groupId,
       role: 'owner',

@@ -10,10 +10,12 @@ router
   .get(validate(groupValidation.getGroupsByUserId), groupController.getGroupsByUserId)
   .post(validate(groupValidation.createGroup), groupController.createGroup);
 
-router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);
+router
+  .route('/:groupId')
+  .get(validate(groupValidation.getGroupById), groupController.getGroupById)
+  .patch(validate(groupValidation.updateGroup), groupController.updateGroupById);
 
 router.route('/:groupId/members').get(groupController.queryMembers);
-
-// router.route('/:groupId').get(groupController.get);
+router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);
 
 module.exports = router;

@@ -31,11 +31,10 @@ const queryGroups = async (filter, options) => {
  * @returns {Promise<QueryResult>}
  */
 const getGroupsByUserId = async (userId) => {
-  const groups = await Group.populate({
+  const groups = await Group.find({}).populate({
     path: 'UserGroup',
     match: {
       user: userId,
-      role: { $ne: 'blacklist' },
     },
   });
   return groups;
@@ -47,7 +46,17 @@ const getGroupsByUserId = async (userId) => {
  * @return {Promise<Group>}
  */
 const getGroupById = async (id) => {
-  const group = await Group.findById(id).populate('UserGroup');
+  const group = await Group.findById(id)
+    .populate({
+      path: 'users',
+    })
+    .populate({
+      path: 'users',
+      populate: {
+        path: 'user',
+        select: 'firstName lastName email',
+      },
+    });
   return group;
 };
 

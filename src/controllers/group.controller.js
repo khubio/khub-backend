@@ -21,6 +21,11 @@ const createGroup = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(group);
 });
 
+const updateGroupById = catchAsync(async (req, res) => {
+  const group = await groupService.updateGroupById(req.params.groupId, req.body);
+  res.send(group);
+});
+
 const createUserGroup = catchAsync(async (req, res) => {
   const userGroup = await userGroupService.createUserGroup(req.body);
   res.status(httpStatus.CREATED).send(userGroup);
@@ -34,17 +39,17 @@ const getGroups = catchAsync(async (req, res) => {
 });
 
 const getGroupsByUserId = catchAsync(async (req, res) => {
-  const groups = await groupService.getGroupByUserId(req.body.userId);
+  const groups = await groupService.getGroupsByUserId(req.body.userId);
   res.send(groups);
 });
 
-const getGroup = catchAsync(async (req, res) => {
-  const group = await groupService.getGroup(req.params.groupId);
+const getGroupById = catchAsync(async (req, res) => {
+  const group = await groupService.getGroupById(req.params.groupId);
   res.send(group);
 });
 
 const getGroupOwner = catchAsync(async (req, res) => {
-  const groupOwner = await groupService.getGroupOwner(req.params.groupId);
+  const groupOwner = await userGroupService.getGroupOwner(req.params.groupId);
   res.send(groupOwner);
 });
 
@@ -83,10 +88,11 @@ module.exports = {
   createUserGroup,
   getGroups,
   getGroupsByUserId,
-  getGroup,
+  getGroupById,
   getGroupOwner,
   queryMembers,
   updateUserGroupById,
   deleteUserGroup,
   deleteGroup,
+  updateGroupById,
 };
