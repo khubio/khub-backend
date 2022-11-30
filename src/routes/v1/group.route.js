@@ -15,7 +15,12 @@ router
   .get(validate(groupValidation.getGroupById), groupController.getGroupById)
   .patch(validate(groupValidation.updateGroup), groupController.updateGroupById);
 
-router.route('/:groupId/members').get(groupController.queryMembers);
+router
+  .route('/:groupId/members')
+  .get(groupController.queryMembers)
+  .patch(validate(groupValidation.updateUserGroupById), groupController.updateUserGroupById)
+  .delete(validate(groupValidation.deleteUserGroupById), groupController.deleteUserGroupById);
+
 router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);
 
 module.exports = router;

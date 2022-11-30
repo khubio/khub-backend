@@ -84,7 +84,7 @@ const updateUserGroupById = {
   }),
 };
 
-const deleteUserGroup = {
+const deleteUserGroupById = {
   params: Joi.object().keys({
     groupId: Joi.string().custom(objectId),
   }),
@@ -107,7 +107,7 @@ module.exports = {
   getGroupOwner,
   queryMembers,
   updateUserGroupById,
-  deleteUserGroup,
+  deleteUserGroupById,
   deleteGroup,
   updateGroup,
   getGroupById,
