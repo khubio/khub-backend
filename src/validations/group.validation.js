@@ -51,14 +51,8 @@ const getGroupById = {
 };
 
 const getGroupsByUserId = {
-  query: Joi.object().keys({
-    name: Joi.string(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
-  }),
-  body: Joi.object().keys({
-    userId: Joi.string().custom(objectId).required(),
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
   }),
 };
 
