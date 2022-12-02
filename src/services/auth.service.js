@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const { createUser } = require('./user.service');
 const tokenService = require('./token.service');
 const userService = require('./user.service');
 const Token = require('../models/token.model');
@@ -93,10 +94,26 @@ const verifyEmail = async (verifyEmailToken) => {
   }
 };
 
+const loginWithGoogle = async (profile) => {
+  const user = await userService.getUserByEmail(profile.email);
+  if (!user) {
+    const userData = {
+      firstName: profile.givenName,
+      lastName: profile.familyName,
+      email: profile.email,
+      password: profile.id,
+    };
+    const newUser = await createUser(userData);
+    return newUser;
+  }
+  return user;
+};
+
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
   verifyEmail,
+  loginWithGoogle,
 };

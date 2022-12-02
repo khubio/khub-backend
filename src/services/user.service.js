@@ -14,6 +14,16 @@ const createUser = async (userBody) => {
   return User.create(userBody);
 };
 
+const createUserWithGoogle = async (userBody) => {
+  if (await User.isEmailTaken(userBody.email)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  return User.create({
+    ...userBody,
+    isEmailVerified: true,
+  });
+};
+
 /**
  * Query for users
  * @param {Object} filter - Mongo filter
@@ -81,6 +91,7 @@ const deleteUserById = async (userId) => {
 
 module.exports = {
   createUser,
+  createUserWithGoogle,
   queryUsers,
   getUserById,
   getUserByEmail,

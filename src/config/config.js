@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
+const { OAuth2Client } = require('google-auth-library');
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
@@ -27,7 +28,15 @@ const envVarsSchema = Joi.object()
   .unknown();
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
-
+const myOAuth2Client = new OAuth2Client(process.env.OAUTH_CLIENT_ID, process.env.OAUTH_CLIENT_SECRET);
+// Set Refresh Token vào OAuth2Client Credentials
+myOAuth2Client.setCredentials({
+  refresh_token: process.env.OAUTH_REFRESH_TOKEN,
+});
+const getAccessToken = async () => {
+  const { token } = await myOAuth2Client.getAccessToken();
+  return token;
+};
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
@@ -68,6 +77,7 @@ module.exports = {
         clientId: process.env.OAUTH_CLIENT_ID,
         clientSecret: process.env.OAUTH_CLIENT_SECRET,
         refreshToken: process.env.OAUTH_REFRESH_TOKEN,
+        accessToken: getAccessToken(),
       },
     },
     from: envVars.EMAIL_FROM,
