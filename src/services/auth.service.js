@@ -95,14 +95,18 @@ const verifyEmail = async (verifyEmailToken) => {
 };
 
 const loginWithGoogle = async (profile) => {
-  const user = await userService.getUserByEmail(profile.email);
+  const { googleId, givenName, familyName, email } = profile;
+  const user = await userService.getUserByEmail(email);
   if (!user) {
     const userData = {
-      firstName: profile.givenName,
-      lastName: profile.familyName,
-      email: profile.email,
-      password: profile.id,
+      firstName: givenName,
+      lastName: familyName,
+      email,
+      password: `khub${googleId}`,
+      isEmailVerified: true,
     };
+    // eslint-disable-next-line no-console
+    console.log(profile);
     const newUser = await createUser(userData);
     return newUser;
   }

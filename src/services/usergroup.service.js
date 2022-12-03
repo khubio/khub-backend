@@ -93,6 +93,16 @@ const deleteUserGroupById = async (userId, groupId) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Group not found');
   }
   await userGroup.remove();
+  await Group.findByIdAndUpdate(groupId, {
+    $pull: {
+      users: userId,
+    },
+  });
+  await User.findByIdAndUpdate(userId, {
+    $pull: {
+      groups: groupId,
+    },
+  });
   return userGroup;
 };
 

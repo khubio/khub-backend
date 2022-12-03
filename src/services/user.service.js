@@ -14,16 +14,6 @@ const createUser = async (userBody) => {
   return User.create(userBody);
 };
 
-const createUserWithGoogle = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  return User.create({
-    ...userBody,
-    isEmailVerified: true,
-  });
-};
-
 /**
  * Query for users
  * @param {Object} filter - Mongo filter
@@ -89,12 +79,24 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+const changePassword = async (userId, { oldPassword, newPassword }) => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  if (!(await user.isPasswordMatch(oldPassword))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect password');
+  }
+  user.password = newPassword;
+  await user.save();
+};
+
 module.exports = {
   createUser,
-  createUserWithGoogle,
   queryUsers,
   getUserById,
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  changePassword,
 };

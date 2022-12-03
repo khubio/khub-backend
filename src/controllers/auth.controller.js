@@ -51,9 +51,9 @@ const verifyEmail = catchAsync(async (req, res) => {
 });
 
 const loginWithGoogle = catchAsync(async (req, res) => {
-  const { idToken } = req.body;
-  const tokens = await authService.loginWithGoogle(idToken);
-  res.send({ ...tokens });
+  const user = await authService.loginWithGoogle(req.body);
+  const tokens = await tokenService.generateAuthTokens(user);
+  res.send({ user, tokens });
 });
 
 module.exports = {

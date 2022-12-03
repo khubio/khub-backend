@@ -67,7 +67,7 @@ const updateUserGroupById = catchAsync(async (req, res) => {
   res.send(userGroup);
 });
 
-const deleteUserGroup = catchAsync(async (req, res) => {
+const deleteUserGroupById = catchAsync(async (req, res) => {
   const { groupId } = req.params;
   const { userId } = req.body;
   await userGroupService.deleteUserGroupById(userId, groupId);
@@ -92,7 +92,7 @@ module.exports = {
   getGroupOwner,
   queryMembers,
   updateUserGroupById,
-  deleteUserGroup,
+  deleteUserGroupById,
   deleteGroup,
   updateGroupById,
 };
