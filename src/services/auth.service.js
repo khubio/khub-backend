@@ -103,10 +103,9 @@ const loginWithGoogle = async (profile) => {
       lastName: familyName,
       email,
       password: `khub${googleId}`,
+      service: 'google',
       isEmailVerified: true,
     };
-    // eslint-disable-next-line no-console
-    console.log(profile);
     const newUser = await createUser(userData);
     return newUser;
   }

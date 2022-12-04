@@ -16,6 +16,14 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    service: {
+      type: String,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
