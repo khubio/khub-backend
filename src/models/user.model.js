@@ -57,14 +57,36 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    groups: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'UserGroup',
-        },
-      ],
-    },
+    groups: [
+      {
+        type: [
+          {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'UserGroup',
+          },
+        ],
+      },
+    ],
+    presentations: [
+      {
+        type: [
+          {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Presentation',
+          },
+        ],
+      },
+    ],
+    participants: [
+      {
+        type: [
+          {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Participant',
+          },
+        ],
+      },
+    ],
   },
   {
     timestamps: true,

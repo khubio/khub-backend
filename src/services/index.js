@@ -1,7 +1,10 @@
+module.exports.answerService = require('./answer.service');
 module.exports.authService = require('./auth.service');
 module.exports.emailService = require('./email.service');
 module.exports.groupService = require('./group.service');
+module.exports.participantService = require('./participant.service');
 module.exports.presentationService = require('./presentation.service');
+module.exports.slideService = require('./slide.service');
 module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.userGroupService = require('./usergroup.service');

@@ -20,6 +20,12 @@ const slideSchema = mongoose.Schema(
     image: {
       type: String,
     },
+    answers: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Answer',
+      },
+    ],
     category: {
       type: String,
       enum: questionCategory,

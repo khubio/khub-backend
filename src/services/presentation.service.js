@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Presentation } = require('../models');
+const { Presentation, User } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,19 +8,25 @@ const ApiError = require('../utils/ApiError');
  * @return {Promise<Presentation>}
  */
 const createPresentation = async (presentationBody) => {
-  return Presentation.create(presentationBody);
+  const presentation = await Presentation.create(presentationBody);
+  await User.findByIdAndUpdate(presentationBody.creator, {
+    $push: {
+      presentations: presentation._id,
+    },
+  });
+  return presentation;
 };
 
 /**
  *
- * @param {string} userId
+ * @param {string} creatorId
  * @returns {Promise<QueryResult>}
  */
-const getPresentationsOfCreatorByUserId = async (userId) => {
+const getPresentationsByCreator = async (creatorId) => {
   const presentations = await Presentation.find({}).populate({
     path: 'creator',
     match: {
-      user: userId,
+      user: creatorId,
     },
   });
   return presentations;
@@ -57,21 +63,26 @@ const updatePresentationById = async (id, updateBody) => {
 
 /**
  * Delete presentation by id
- * @param {String} PresentationId
+ * @param {String} id
  * @returns {Promise<Presentation>}
  */
-const deletePresentationById = async (PresentationId) => {
-  const presentation = await getPresentationById(PresentationId);
+const deletePresentationById = async (id) => {
+  const presentation = await getPresentationById(id);
   if (!presentation) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Presentation not found');
   }
+  await User.findByIdAndUpdate(presentation.creator, {
+    $pull: {
+      presentations: presentation._id,
+    },
+  });
   await presentation.remove();
   return presentation;
 };
 
 module.exports = {
   createPresentation,
-  getPresentationsOfCreatorByUserId,
+  getPresentationsByCreator,
   getPresentationById,
   updatePresentationById,
   deletePresentationById,
