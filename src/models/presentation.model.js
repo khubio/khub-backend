@@ -14,6 +14,11 @@ const presentationSchema = mongoose.Schema(
       ],
       require: true,
     },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     type: {
       type: String,
       enum: presentationLayout,
@@ -22,26 +27,22 @@ const presentationSchema = mongoose.Schema(
     layout: {
       type: mongoose.SchemaTypes.Url,
     },
-    slides: [
-      {
-        type: [
-          {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'Slide',
-          },
-        ],
-      },
-    ],
-    participants: [
-      {
-        type: [
-          {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'Participant',
-          },
-        ],
-      },
-    ],
+    slides: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Slide',
+        },
+      ],
+    },
+    participants: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Participant',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

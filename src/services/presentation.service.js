@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
-const { Presentation, User } = require('../models');
+const { participantService } = require('.');
+const { Presentation, User, Slide } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -71,11 +72,22 @@ const deletePresentationById = async (id) => {
   if (!presentation) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Presentation not found');
   }
-  await User.findByIdAndUpdate(presentation.creator, {
-    $pull: {
-      presentations: presentation._id,
-    },
-  });
+
+  const participants = await participantService.getParticipantsByPresentationId(presentation._id);
+  if (participants.length) {
+    await Promise.all(participants.map((participant) => participantService.deleteParticipantById(participant._id)));
+  }
+  await Promise.all([
+    User.findByIdAndUpdate(presentation.creator, {
+      $pull: {
+        presentations: presentation._id,
+      },
+    }),
+    Slide.deleteMany({
+      presentation: presentation._id,
+    }),
+  ]);
+
   await presentation.remove();
   return presentation;
 };

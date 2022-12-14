@@ -41,6 +41,14 @@ const slideSchema = mongoose.Schema(
 slideSchema.plugin(toJSON);
 slideSchema.plugin(paginate);
 
+slideSchema.pre('remove', async function (next) {
+  await Promise.all([
+    this.model('Presentation').update({ _id: { $eq: this.presentation } }, { $pull: { slides: this._id } }, { multi: true }),
+    this.model('Answer').remove({ _id: { $in: this.answers } }, { multi: true }),
+  ]);
+  next();
+});
+
 /**
  * @typedef Slide
  */

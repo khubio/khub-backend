@@ -43,6 +43,13 @@ const answerSchema = mongoose.Schema(
 answerSchema.plugin(toJSON);
 answerSchema.plugin(paginate);
 
+answerSchema.pre('remove', async function (next) {
+  await Promise.all([
+    this.model('Participant').update({ _id: { $in: this.participants } }, { $pull: { answers: this._id } }, { multi: true }),
+    this.model('Slide').update({ _id: { $eq: this.slide } }, { $pull: { answers: this._id } }, { multi: false }),
+  ]);
+  next();
+});
 /**
  * @typedef Answer
  */

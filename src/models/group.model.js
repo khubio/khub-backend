@@ -8,16 +8,14 @@ const groupSchema = mongoose.Schema(
       require: true,
       trim: true,
     },
-    users: [
-      {
-        type: [
-          {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'UserGroup',
-          },
-        ],
-      },
-    ],
+    users: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'UserGroup',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

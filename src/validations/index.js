@@ -1,3 +1,4 @@
 module.exports.authValidation = require('./auth.validation');
+module.exports.presentationValidation = require('./presentation.validation');
 module.exports.userValidation = require('./user.validation');
 module.exports.groupValidation = require('./group.validation');

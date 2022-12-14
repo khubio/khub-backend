@@ -66,6 +66,11 @@ const deleteParticipantById = async (id) => {
       participants: id,
     },
   });
+  await Answer.findByIdAndUpdate(participant.answer, {
+    $pull: {
+      participants: id,
+    },
+  });
   if (participant.user) {
     await User.findByIdAndUpdate(participant.user, {
       $pull: {
