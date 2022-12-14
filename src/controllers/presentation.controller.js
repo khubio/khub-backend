@@ -25,7 +25,7 @@ const updatePresentationById = catchAsync(async (req, res) => {
 });
 
 const deletePresentationById = catchAsync(async (req, res) => {
-  const presentation = await presentationService.deletePresentationById(req.params.presentationId, req.body);
+  const presentation = await presentationService.deletePresentationById(req.params.presentationId);
   res.send(presentation);
 });
 
