@@ -2,8 +2,10 @@ const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
 const createSlide = {
+  params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
+  }),
   body: Joi.object().keys({
-    presentation: Joi.string().custom(objectId),
     question: Joi.string().trim(),
     image: Joi.string().uri(),
     category: Joi.string().valid('yesNo', 'multipleChoice', 'answer'),
@@ -11,8 +13,10 @@ const createSlide = {
 };
 
 const getSlidesByPresentationId = {
-  query: Joi.object().keys({
+  params: Joi.object().keys({
     presentationId: Joi.string().custom(objectId),
+  }),
+  query: Joi.object().keys({
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -28,9 +32,9 @@ const getSlideById = {
 const updateSlideById = {
   params: Joi.object().keys({
     slideId: Joi.string().custom(objectId),
+    presentationId: Joi.string().custom(objectId),
   }),
   body: Joi.object().keys({
-    presentation: Joi.string().custom(objectId),
     question: Joi.string().trim(),
     image: Joi.string().uri(),
     category: Joi.string().valid('yesNo', 'multipleChoice', 'answer'),

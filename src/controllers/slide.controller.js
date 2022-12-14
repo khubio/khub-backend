@@ -3,17 +3,18 @@ const catchAsync = require('../utils/catchAsync');
 const { slideService } = require('../services');
 
 const createSlide = catchAsync(async (req, res) => {
-  const slide = await slideService.createSlide({ ...req.body });
+  const presentation = req.params.presentationId;
+  const slide = await slideService.createSlide({ ...req.body, presentation });
   res.status(httpStatus.CREATED).send(slide);
 });
 
 const getSlidesByPresentationId = catchAsync(async (req, res) => {
-  const slides = await slideService.getSlidesByPresentationId(req.query.presentationId);
+  const slides = await slideService.getSlidesByPresentationId(req.params.presentationId);
   res.send(slides);
 });
 
 const getSlideById = catchAsync(async (req, res) => {
-  const slide = await slideService.getSlideById(req.params.presentationId);
+  const slide = await slideService.getSlideById(req.params.slideId);
   res.send(slide);
 });
 
