@@ -53,6 +53,18 @@ const presentationSchema = mongoose.Schema(
 presentationSchema.plugin(toJSON);
 presentationSchema.plugin(paginate);
 
+presentationSchema.pre('remove', async function (next) {
+  await Promise.all([
+    this.model('Slide').update({ _id: { $in: this.slides } }, { $pull: { presentation: this._id } }, { multi: true }),
+    this.model('Participant').update(
+      { _id: { $in: this.participants } },
+      { $pull: { presentation: this._id } },
+      { multi: true }
+    ),
+  ]);
+  next();
+});
+
 /**
  * @typedef Presentation
  */

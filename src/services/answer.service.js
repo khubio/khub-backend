@@ -71,12 +71,6 @@ const deleteAnswerById = async (id) => {
   if (!answer) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
   }
-  await Slide.findByIdAndUpdate(answer.slide, {
-    $pull: {
-      answers: id,
-    },
-  });
-
   await answer.remove();
   return answer;
 };

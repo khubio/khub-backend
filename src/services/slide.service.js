@@ -71,11 +71,6 @@ const deleteSlideById = async (id) => {
   if (!slide) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Slide not found');
   }
-  await Presentation.findByIdAndUpdate(slide.presentation, {
-    $pull: {
-      slides: id,
-    },
-  });
   await slide.remove();
   return slide;
 };

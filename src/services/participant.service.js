@@ -61,23 +61,6 @@ const deleteParticipantById = async (id) => {
   if (!participant) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Participant not found');
   }
-  await Presentation.findByIdAndUpdate(participant.presentation, {
-    $pull: {
-      participants: id,
-    },
-  });
-  await Answer.findByIdAndUpdate(participant.answer, {
-    $pull: {
-      participants: id,
-    },
-  });
-  if (participant.user) {
-    await User.findByIdAndUpdate(participant.user, {
-      $pull: {
-        participants: id,
-      },
-    });
-  }
   await participant.remove();
   return participant;
 };
