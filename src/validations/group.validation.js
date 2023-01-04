@@ -51,8 +51,8 @@ const getGroupById = {
 };
 
 const getGroupsByUserId = {
-  params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+  query: Joi.object().keys({
+    roles: Joi.string(),
   }),
 };
 

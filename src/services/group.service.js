@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Group } = require('../models');
+const { Group, UserGroup } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -30,14 +30,25 @@ const queryGroups = async (filter, options) => {
  * @param {string} userId
  * @returns {Promise<QueryResult>}
  */
-const getGroupsByUserId = async (userId) => {
-  const groups = await Group.find({}).populate({
-    path: 'UserGroup',
-    match: {
-      user: userId,
-    },
+const getGroupsByUserId = async (userId, roles) => {
+  const groups = await UserGroup.find({
+    user: userId,
+    role: { $in: roles },
+  })
+    .select('role')
+    .populate({
+      path: 'group',
+      options: { lean: true },
+    })
+    .lean();
+  const data = groups.map((group) => {
+    return {
+      id: group.group._id,
+      name: group.group.name,
+      role: group.role,
+    };
   });
-  return groups;
+  return data;
 };
 
 /**

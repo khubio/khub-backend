@@ -4,20 +4,15 @@ const pick = require('../utils/pick');
 const { groupService, userGroupService } = require('../services');
 
 const createGroup = catchAsync(async (req, res) => {
-  const { name, members } = req.body;
+  const { _id: userId } = req.user;
+  const { name } = req.body;
   const group = await groupService.createGroup({ name });
   const groupId = group._id;
-
-  await Promise.all(
-    members.map((member) => {
-      return userGroupService.createUserGroup({
-        group: groupId,
-        user: member.userId,
-        role: member.role,
-      });
-    })
-  );
-
+  await userGroupService.createUserGroup({
+    group: groupId,
+    user: userId,
+    role: 'owner',
+  });
   res.status(httpStatus.CREATED).send(group);
 });
 
@@ -39,7 +34,9 @@ const getGroups = catchAsync(async (req, res) => {
 });
 
 const getGroupsByUserId = catchAsync(async (req, res) => {
-  const groups = await groupService.getGroupsByUserId(req.body.userId);
+  const { _id: userId } = req.user;
+  const { roles } = req.query;
+  const groups = await groupService.getGroupsByUserId(userId, roles.split(','));
   res.send(groups);
 });
 
