@@ -60,15 +60,27 @@ const getGroupById = async (id) => {
   const group = await Group.findById(id)
     .populate({
       path: 'users',
-    })
-    .populate({
-      path: 'users',
       populate: {
         path: 'user',
         select: 'firstName lastName email',
       },
-    });
-  return group;
+    })
+    .lean();
+  const formatUsers = group.users.map((user) => {
+    return {
+      id: user.user._id,
+      role: user.role,
+      firstName: user.user.firstName,
+      lastName: user.user.lastName,
+      email: user.user.email,
+    };
+  });
+
+  const { users, ...rest } = group;
+  return {
+    ...rest,
+    users: formatUsers,
+  };
 };
 
 /**
@@ -102,6 +114,19 @@ const deleteGroupById = async (groupId) => {
   return group;
 };
 
+const promoteMemberToCoOwner = async (groupId, userId) => {
+  const userGroup = await UserGroup.findOneAndUpdate(
+    {
+      userId,
+      groupId,
+    },
+    {
+      role: 'coOwner',
+    }
+  );
+  return userGroup;
+};
+
 module.exports = {
   createGroup,
   queryGroups,
@@ -109,4 +134,5 @@ module.exports = {
   getGroupById,
   updateGroupById,
   deleteGroupById,
+  promoteMemberToCoOwner,
 };

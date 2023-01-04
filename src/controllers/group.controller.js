@@ -80,6 +80,27 @@ const deleteGroup = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const promoteMemberToCoOwner = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { userId } = req.body;
+  await userGroupService.updateUserGroupById(userId, groupId, { role: 'coOwner' });
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const demoteCoOwnerToMember = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { userId } = req.body;
+  await userGroupService.updateUserGroupById(userId, groupId, { role: 'member' });
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const kickMember = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { userId } = req.body;
+  await userGroupService.deleteUserGroupById(userId, groupId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 module.exports = {
   createGroup,
   createUserGroup,
@@ -92,4 +113,7 @@ module.exports = {
   deleteUserGroupById,
   deleteGroup,
   updateGroupById,
+  promoteMemberToCoOwner,
+  demoteCoOwnerToMember,
+  kickMember,
 };
