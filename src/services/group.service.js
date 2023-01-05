@@ -13,20 +13,6 @@ const createGroup = async (groupBody) => {
 };
 
 /**
- * Query for groups
- * @param {Object} filter
- * @param {Object} options
- * @param {string} [options.sortBy]
- * @param {number} [options.limit]
- * @param {number} [options.page]
- * @return {Promise<QueryResult>}
- */
-const queryGroups = async (filter, options) => {
-  const groups = await Group.paginate(filter, options);
-  return groups;
-};
-
-/**
  *
  * @param {string} userId
  * @returns {Promise<QueryResult>}
@@ -93,23 +79,6 @@ const getGroupDetailsById = async (id, roles) => {
 };
 
 /**
- * update group by id
- * @param {String} id
- * @param {Object} updateBody
- * @returns {Promise<Group>}
- */
-const updateGroupById = async (id, updateBody) => {
-  const group = await getGroupById(id);
-  if (!group) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Group not found');
-  }
-
-  Object.assign(group, updateBody);
-  await group.save();
-  return group;
-};
-
-/**
  * Delete group by id
  * @param {String} groupId
  * @returns {Promise<Group>}
@@ -124,26 +93,10 @@ const deleteGroupById = async (groupId) => {
   return group;
 };
 
-const promoteMemberToCoOwner = async (groupId, userId) => {
-  const userGroup = await UserGroup.findOneAndUpdate(
-    {
-      userId,
-      groupId,
-    },
-    {
-      role: 'coOwner',
-    }
-  );
-  return userGroup;
-};
-
 module.exports = {
   createGroup,
-  queryGroups,
   getGroupsByUserId,
   getGroupById,
   getGroupDetailsById,
-  updateGroupById,
   deleteGroupById,
-  promoteMemberToCoOwner,
 };

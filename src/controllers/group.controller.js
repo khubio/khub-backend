@@ -1,6 +1,5 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const pick = require('../utils/pick');
 const { groupService, userGroupService, emailService } = require('../services');
 const { Group } = require('../models');
 
@@ -17,21 +16,9 @@ const createGroup = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(group);
 });
 
-const updateGroupById = catchAsync(async (req, res) => {
-  const group = await groupService.updateGroupById(req.params.groupId, req.body);
-  res.send(group);
-});
-
 const createUserGroup = catchAsync(async (req, res) => {
   const userGroup = await userGroupService.createUserGroup(req.body);
   res.status(httpStatus.CREATED).send(userGroup);
-});
-
-const getGroups = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const results = await groupService.queryGroups(filter, options);
-  res.send(results);
 });
 
 const getGroupsByUserId = catchAsync(async (req, res) => {
@@ -45,18 +32,6 @@ const getGroupDetailsById = catchAsync(async (req, res) => {
   const { roles } = req.query;
   const group = await groupService.getGroupDetailsById(req.params.groupId, roles.split(','));
   res.send(group);
-});
-
-const getGroupOwner = catchAsync(async (req, res) => {
-  const groupOwner = await userGroupService.getGroupOwner(req.params.groupId);
-  res.send(groupOwner);
-});
-
-const queryMembers = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'role']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const results = await userGroupService.queryMembers(filter, options);
-  res.send(results);
 });
 
 const updateUserGroupById = catchAsync(async (req, res) => {
@@ -76,27 +51,6 @@ const deleteUserGroupById = catchAsync(async (req, res) => {
 const deleteGroup = catchAsync(async (req, res) => {
   const { groupId } = req.params;
   await groupService.deleteGroupById(groupId);
-  res.status(httpStatus.NO_CONTENT).send();
-});
-
-const promoteMemberToCoOwner = catchAsync(async (req, res) => {
-  const { groupId } = req.params;
-  const { userId } = req.body;
-  await userGroupService.updateUserGroupById(userId, groupId, { role: 'coOwner' });
-  res.status(httpStatus.NO_CONTENT).send();
-});
-
-const demoteCoOwnerToMember = catchAsync(async (req, res) => {
-  const { groupId } = req.params;
-  const { userId } = req.body;
-  await userGroupService.updateUserGroupById(userId, groupId, { role: 'member' });
-  res.status(httpStatus.NO_CONTENT).send();
-});
-
-const kickMember = catchAsync(async (req, res) => {
-  const { groupId } = req.params;
-  const { userId } = req.body;
-  await userGroupService.deleteUserGroupById(userId, groupId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
@@ -146,22 +100,24 @@ const joinGroup = catchAsync(async (req, res) => {
   res.status(httpStatus.UNPROCESSABLE_ENTITY).send();
 });
 
+const getRolInGroup = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { _id: userId } = req.user;
+  const userGroup = await userGroupService.getUserGroupById(userId, groupId);
+  const { role } = userGroup;
+  res.send(role);
+});
+
 module.exports = {
   createGroup,
   createUserGroup,
-  getGroups,
   getGroupsByUserId,
   getGroupDetailsById,
-  getGroupOwner,
-  queryMembers,
   updateUserGroupById,
   deleteUserGroupById,
   deleteGroup,
-  updateGroupById,
-  promoteMemberToCoOwner,
-  demoteCoOwnerToMember,
-  kickMember,
   invitePersonToGroup,
   groupJoin,
   joinGroup,
+  getRolInGroup,
 };

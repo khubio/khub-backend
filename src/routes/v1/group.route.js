@@ -14,23 +14,42 @@ router
 
 router
   .route('/:groupId')
-  .get(auth(), validate(groupValidation.getGroupById), allowLeastRoleInGroup(), groupController.getGroupDetailsById)
-  .patch(auth(), validate(groupValidation.updateGroup), groupController.updateGroupById)
+  .get(auth(), validate(groupValidation.getGroupDetailsById), allowLeastRoleInGroup(), groupController.getGroupDetailsById)
   .delete(auth(), validate(groupValidation.deleteGroup), allowLeastRoleInGroup('owner'), groupController.deleteGroup);
 
-router.post('/:groupId/invite-by-email', auth(), allowLeastRoleInGroup('owner'), groupController.invitePersonToGroup);
+router.get(
+  '/:groupId/role',
+  auth(),
+  validate(groupValidation.getGroupDetailsById),
+  allowLeastRoleInGroup(),
+  groupController.getRolInGroup
+);
+router.post(
+  '/:groupId/invite-by-email',
+  validate(groupValidation.getGroupDetailsById),
+  auth(),
+  allowLeastRoleInGroup('owner'),
+  groupController.invitePersonToGroup
+);
 
 router
   .route('/:groupId/join')
-  .get(auth(), validate(groupValidation.getGroupById), groupController.groupJoin)
-  .post(auth(), validate(groupValidation.getGroupById), groupController.joinGroup);
+  .get(auth(), validate(groupValidation.getGroupDetailsById), groupController.groupJoin)
+  .post(auth(), validate(groupValidation.getGroupDetailsById), groupController.joinGroup);
 
 router
   .route('/:groupId/members')
-  .get(auth(), groupController.queryMembers)
-  .patch(auth(), validate(groupValidation.updateUserGroupById), groupController.updateUserGroupById)
-  .delete(auth(), validate(groupValidation.deleteUserGroupById), groupController.deleteUserGroupById);
-
-router.route('/:groupId/groupOwner').get(groupController.getGroupOwner);
+  .patch(
+    auth(),
+    validate(groupValidation.updateUserGroupById),
+    allowLeastRoleInGroup('owner'),
+    groupController.updateUserGroupById
+  )
+  .delete(
+    auth(),
+    validate(groupValidation.deleteUserGroupById),
+    allowLeastRoleInGroup('owner'),
+    groupController.deleteUserGroupById
+  );
 
 module.exports = router;

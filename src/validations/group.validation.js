@@ -35,16 +35,7 @@ const updateGroup = {
   }),
 };
 
-const getGroups = {
-  query: Joi.object().keys({
-    name: Joi.string(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
-  }),
-};
-
-const getGroupById = {
+const getGroupDetailsById = {
   params: Joi.object().keys({
     groupId: Joi.string().custom(objectId),
   }),
@@ -53,24 +44,6 @@ const getGroupById = {
 const getGroupsByUserId = {
   query: Joi.object().keys({
     roles: Joi.string(),
-  }),
-};
-
-const getGroupOwner = {
-  params: Joi.object().keys({
-    groupId: Joi.string().custom(objectId),
-  }),
-};
-
-const queryMembers = {
-  params: Joi.object().keys({
-    groupId: Joi.string().custom(objectId),
-  }),
-  query: Joi.object().keys({
-    role: Joi.string(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
   }),
 };
 
@@ -102,13 +75,10 @@ const deleteGroup = {
 module.exports = {
   createGroup,
   createUserGroup,
-  getGroups,
   getGroupsByUserId,
-  getGroupOwner,
-  queryMembers,
   updateUserGroupById,
   deleteUserGroupById,
   deleteGroup,
   updateGroup,
-  getGroupById,
+  getGroupDetailsById,
 };

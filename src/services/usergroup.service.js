@@ -34,38 +34,6 @@ const getUserGroupById = async (userId, groupId) => {
   return UserGroup.findOne({ user: userId, group: groupId });
 };
 
-/**
- * Get group owner of a group
- * @param {String} groupId
- * @returns {Promise<User>}
- */
-const getGroupOwner = async (groupId) => {
-  const groupOwner = await User.findOne().populate({
-    path: 'groups',
-    match: {
-      group: groupId,
-      role: 'owner',
-    },
-  });
-  return groupOwner;
-};
-
-/**
- * Query for members in a group
- * @param {String} groupId
- * @returns {Promise<QueryResult>}
- */
-const queryMembers = async (groupId, filter, option) => {
-  const member = await User.populate({
-    path: 'UserGroup',
-    match: {
-      group: groupId,
-      role: { $ne: 'blacklist' },
-    },
-  }).paginate(filter, option);
-  return member;
-};
-
 const getEmailMembers = async (groupId) => {
   const userGroups = await UserGroup.find({
     group: groupId,
@@ -157,8 +125,6 @@ const deleteUserGroupsByGroupId = async (groupId) => {
 module.exports = {
   createUserGroup,
   getUserGroupById,
-  getGroupOwner,
-  queryMembers,
   updateUserGroupById,
   deleteUserGroupById,
   isGroupOwner,

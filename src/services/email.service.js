@@ -65,7 +65,7 @@ If you did not create an account, then ignore this email.`;
 
 const sendInvitationEmail = async (to, groupId, groupName, owner) => {
   const subject = 'Email Invitation to Group';
-  const invitationUrl = `${config.email.feUrl}/groups/:${groupId}/join`;
+  const invitationUrl = `${config.email.feUrl}/groups/${groupId}/join`;
   const text = `Dear user,
 ${owner} invite you to join ${groupName}, to join this group, click on this link:
 
