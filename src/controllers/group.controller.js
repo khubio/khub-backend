@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
 const { groupService, userGroupService, emailService } = require('../services');
+const { Group } = require('../models');
 
 const createGroup = catchAsync(async (req, res) => {
   const { _id: userId } = req.user;
@@ -121,12 +122,31 @@ const invitePersonToGroup = catchAsync(async (req, res) => {
   }
 });
 
-const checkUserInGroup = catchAsync(async (req, res) => {
+const groupJoin = catchAsync(async (req, res) => {
   const { groupId } = req.params;
   const { _id: userId } = req.user;
 
+  const [isJoinedGroup, group] = await Promise.all([
+    userGroupService.isJoinedGroup(userId, groupId),
+    Group.findById(groupId).select('name'),
+  ]);
+  res.send({ isJoinedGroup, group });
+});
+
+const joinGroup = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { _id: userId } = req.user;
   const isJoinedGroup = await userGroupService.isJoinedGroup(userId, groupId);
-  res.send(isJoinedGroup);
+  if (!isJoinedGroup) {
+    const userGroup = await userGroupService.createUserGroup({
+      user: userId,
+      group: groupId,
+      role: 'member',
+    });
+    res.status(httpStatus.CREATED).send(userGroup);
+    return;
+  }
+  res.status(httpStatus.UNPROCESSABLE_ENTITY).send();
 });
 
 module.exports = {
@@ -145,5 +165,6 @@ module.exports = {
   demoteCoOwnerToMember,
   kickMember,
   invitePersonToGroup,
-  checkUserInGroup,
+  groupJoin,
+  joinGroup,
 };

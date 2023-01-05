@@ -18,7 +18,11 @@ router
   .patch(auth(), validate(groupValidation.updateGroup), groupController.updateGroupById);
 
 router.post('/:groupId/invite-by-email', auth(), allowLeastRoleInGroup('owner'), groupController.invitePersonToGroup);
-router.post('/:groupId/joined', auth(), groupController.checkUserInGroup);
+
+router
+  .route('/:groupId/join')
+  .get(auth(), validate(groupValidation.getGroupById), groupController.groupJoin)
+  .post(auth(), validate(groupValidation.getGroupById), groupController.joinGroup);
 
 router
   .route('/:groupId/members')
