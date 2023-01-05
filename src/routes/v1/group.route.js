@@ -3,6 +3,7 @@ const validate = require('../../middlewares/validate');
 const { groupController } = require('../../controllers');
 const { groupValidation } = require('../../validations');
 const auth = require('../../middlewares/auth');
+const allowLeastRoleInGroup = require('../../middlewares/allowLeastRoleInGroup');
 
 const router = express.Router();
 
@@ -13,8 +14,11 @@ router
 
 router
   .route('/:groupId')
-  .get(auth(), validate(groupValidation.getGroupById), groupController.getGroupById)
+  .get(auth(), validate(groupValidation.getGroupById), allowLeastRoleInGroup(), groupController.getGroupById)
   .patch(auth(), validate(groupValidation.updateGroup), groupController.updateGroupById);
+
+router.post('/:groupId/invite-by-email', auth(), allowLeastRoleInGroup('owner'), groupController.invitePersonToGroup);
+router.post('/:groupId/joined', auth(), groupController.checkUserInGroup);
 
 router
   .route('/:groupId/members')

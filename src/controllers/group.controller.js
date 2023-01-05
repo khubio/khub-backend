@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
-const { groupService, userGroupService } = require('../services');
+const { groupService, userGroupService, emailService } = require('../services');
 
 const createGroup = catchAsync(async (req, res) => {
   const { _id: userId } = req.user;
@@ -41,7 +41,8 @@ const getGroupsByUserId = catchAsync(async (req, res) => {
 });
 
 const getGroupById = catchAsync(async (req, res) => {
-  const group = await groupService.getGroupById(req.params.groupId);
+  const { roles } = req.query;
+  const group = await groupService.getGroupById(req.params.groupId, roles.split(','));
   res.send(group);
 });
 
@@ -101,6 +102,33 @@ const kickMember = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const invitePersonToGroup = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { _id: userId } = req.user;
+  const { email } = req.body;
+
+  const isGroupOwner = await userGroupService.isGroupOwner(userId, groupId);
+  if (!isGroupOwner) {
+    res.status(httpStatus.UNAUTHORIZED).send({ error: `Cannot invite because user is not owner's group` });
+  } else {
+    const emailMembers = await userGroupService.getEmailMembers(groupId);
+    if (emailMembers.includes(email)) {
+      res.status(httpStatus.UNPROCESSABLE_ENTITY).send({ message: `Member is already in this group` });
+    } else {
+      await emailService.sendInvitationEmail(email, groupId);
+      res.status(httpStatus.NO_CONTENT).send();
+    }
+  }
+});
+
+const checkUserInGroup = catchAsync(async (req, res) => {
+  const { groupId } = req.params;
+  const { _id: userId } = req.user;
+
+  const isJoinedGroup = await userGroupService.isJoinedGroup(userId, groupId);
+  res.send(isJoinedGroup);
+});
+
 module.exports = {
   createGroup,
   createUserGroup,
@@ -116,4 +144,6 @@ module.exports = {
   promoteMemberToCoOwner,
   demoteCoOwnerToMember,
   kickMember,
+  invitePersonToGroup,
+  checkUserInGroup,
 };

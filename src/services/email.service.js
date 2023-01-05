@@ -32,7 +32,7 @@ const sendEmail = async (to, subject, text) => {
 const sendResetPasswordEmail = async (to, token) => {
   const subject = 'Reset password';
   // replace this url with the link to the reset password page of your front-end app
-  const resetPasswordUrl = `${process.env.FE_URL}/auth/reset-password?token=${token}`;
+  const resetPasswordUrl = `${config.email.feUrl}/auth/reset-password?token=${token}`;
   const text = `Dear user,
 
 To reset your password, click on this link:
@@ -52,7 +52,7 @@ If you did not request any password resets, then ignore this email.`;
 const sendVerificationEmail = async (to, token) => {
   const subject = 'Email Verification';
   // replace this url with the link to the email verification page of your front-end app
-  const verificationEmailUrl = `${process.env.FE_URL}/auth/verify-email?token=${token}`;
+  const verificationEmailUrl = `${config.email.feUrl}/auth/verify-email?token=${token}`;
   const text = `Dear user,
 
 To verify your email, click on this link:
@@ -63,9 +63,22 @@ If you did not create an account, then ignore this email.`;
   await sendEmail(to, subject, text);
 };
 
+const sendInvitationEmail = async (to, groupId, groupName, owner) => {
+  const subject = 'Email Invitation to Group';
+  const invitationUrl = `${config.email.feUrl}/groups/:${groupId}/join`;
+  const text = `Dear user,
+${owner} invite you to join ${groupName}, to join this group, click on this link:
+
+${invitationUrl}
+
+If you are not interested, you can ignore this email.`;
+  await sendEmail(to, subject, text);
+};
+
 module.exports = {
   transport,
   sendEmail,
   sendResetPasswordEmail,
   sendVerificationEmail,
+  sendInvitationEmail,
 };

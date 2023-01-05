@@ -56,7 +56,7 @@ const getGroupsByUserId = async (userId, roles) => {
  * @param {ObjectId} id
  * @return {Promise<Group>}
  */
-const getGroupById = async (id) => {
+const getGroupById = async (id, roles) => {
   const group = await Group.findById(id)
     .populate({
       path: 'users',
@@ -76,10 +76,13 @@ const getGroupById = async (id) => {
     };
   });
 
-  const { users, ...rest } = group;
+  const filterUsers = formatUsers.filter((user) => roles.includes(user.role));
+
+  const { users, _id, ...rest } = group;
   return {
     ...rest,
-    users: formatUsers,
+    users: filterUsers,
+    id: _id,
   };
 };
 

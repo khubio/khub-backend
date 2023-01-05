@@ -64,6 +64,16 @@ const queryMembers = async (groupId, filter, option) => {
   return member;
 };
 
+const getEmailMembers = async (groupId) => {
+  const userGroups = await UserGroup.find({
+    group: groupId,
+  }).populate({
+    path: 'user',
+    select: 'email',
+  });
+  return userGroups.map((userGroup) => userGroup.user.email);
+};
+
 /**
  * update userGroup by userId and groupId
  * @param {String} userId
@@ -106,6 +116,32 @@ const deleteUserGroupById = async (userId, groupId) => {
   return userGroup;
 };
 
+const isGroupOwner = async (userId, groupId) => {
+  const userGroup = await UserGroup.find({
+    user: userId,
+    group: groupId,
+    role: 'owner',
+  });
+  return !!userGroup;
+};
+
+const isJoinedGroup = async (userId, groupId) => {
+  const userGroup = await UserGroup.findOne({
+    user: userId,
+    group: groupId,
+  });
+  return !!userGroup;
+};
+
+const requiredRoleInGroup = async (userId, groupId, requiredRoles) => {
+  const userGroup = await UserGroup.findOne({
+    user: userId,
+    group: groupId,
+    role: { $in: requiredRoles },
+  });
+  return !!userGroup;
+};
+
 module.exports = {
   createUserGroup,
   getUserGroupById,
@@ -113,4 +149,8 @@ module.exports = {
   queryMembers,
   updateUserGroupById,
   deleteUserGroupById,
+  isGroupOwner,
+  getEmailMembers,
+  isJoinedGroup,
+  requiredRoleInGroup,
 };
