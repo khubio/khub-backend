@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { Group, UserGroup } = require('../models');
 const ApiError = require('../utils/ApiError');
+const userGroupService = require('./usergroup.service');
 
 /**
  * Create a group
@@ -56,7 +57,12 @@ const getGroupsByUserId = async (userId, roles) => {
  * @param {ObjectId} id
  * @return {Promise<Group>}
  */
-const getGroupById = async (id, roles) => {
+
+const getGroupById = (id) => {
+  return Group.findById(id);
+};
+
+const getGroupDetailsById = async (id, roles) => {
   const group = await Group.findById(id)
     .populate({
       path: 'users',
@@ -113,6 +119,7 @@ const deleteGroupById = async (groupId) => {
   if (!group) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Group not found');
   }
+  await userGroupService.deleteUserGroupsByGroupId(groupId);
   await group.remove();
   return group;
 };
@@ -135,6 +142,7 @@ module.exports = {
   queryGroups,
   getGroupsByUserId,
   getGroupById,
+  getGroupDetailsById,
   updateGroupById,
   deleteGroupById,
   promoteMemberToCoOwner,

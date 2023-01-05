@@ -41,9 +41,9 @@ const getGroupsByUserId = catchAsync(async (req, res) => {
   res.send(groups);
 });
 
-const getGroupById = catchAsync(async (req, res) => {
+const getGroupDetailsById = catchAsync(async (req, res) => {
   const { roles } = req.query;
-  const group = await groupService.getGroupById(req.params.groupId, roles.split(','));
+  const group = await groupService.getGroupDetailsById(req.params.groupId, roles.split(','));
   res.send(group);
 });
 
@@ -75,9 +75,6 @@ const deleteUserGroupById = catchAsync(async (req, res) => {
 
 const deleteGroup = catchAsync(async (req, res) => {
   const { groupId } = req.params;
-  const members = await userGroupService.queryMembers(groupId);
-
-  await Promise.all(members.map((member) => userGroupService.deleteUserGroupById(groupId, member._id)));
   await groupService.deleteGroupById(groupId);
   res.status(httpStatus.NO_CONTENT).send();
 });
@@ -154,7 +151,7 @@ module.exports = {
   createUserGroup,
   getGroups,
   getGroupsByUserId,
-  getGroupById,
+  getGroupDetailsById,
   getGroupOwner,
   queryMembers,
   updateUserGroupById,

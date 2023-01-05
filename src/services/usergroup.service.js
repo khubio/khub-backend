@@ -9,16 +9,18 @@ const ApiError = require('../utils/ApiError');
  */
 const createUserGroup = async (userGroupBody) => {
   const userGroup = await UserGroup.create(userGroupBody);
-  await Group.findByIdAndUpdate(userGroupBody.group, {
-    $push: {
-      users: userGroup._id,
-    },
-  });
-  await User.findByIdAndUpdate(userGroupBody.user, {
-    $push: {
-      groups: userGroup._id,
-    },
-  });
+  await Promise.all([
+    Group.findByIdAndUpdate(userGroupBody.group, {
+      $push: {
+        users: userGroup._id,
+      },
+    }),
+    User.findByIdAndUpdate(userGroupBody.user, {
+      $push: {
+        groups: userGroup._id,
+      },
+    }),
+  ]);
   return userGroup;
 };
 
@@ -29,7 +31,7 @@ const createUserGroup = async (userGroupBody) => {
  * @returns {Promise<UserGroup>}
  */
 const getUserGroupById = async (userId, groupId) => {
-  return UserGroup.findOne({ userId, groupId });
+  return UserGroup.findOne({ user: userId, group: groupId });
 };
 
 /**
@@ -102,17 +104,19 @@ const deleteUserGroupById = async (userId, groupId) => {
   if (!userGroup) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Group not found');
   }
+  await Promise.all([
+    Group.findByIdAndUpdate(groupId, {
+      $pull: {
+        users: userGroup._id,
+      },
+    }),
+    User.findByIdAndUpdate(userId, {
+      $pull: {
+        groups: userGroup._id,
+      },
+    }),
+  ]);
   await userGroup.remove();
-  await Group.findByIdAndUpdate(groupId, {
-    $pull: {
-      users: userId,
-    },
-  });
-  await User.findByIdAndUpdate(userId, {
-    $pull: {
-      groups: groupId,
-    },
-  });
   return userGroup;
 };
 
@@ -142,6 +146,14 @@ const requiredRoleInGroup = async (userId, groupId, requiredRoles) => {
   return !!userGroup;
 };
 
+const deleteUserGroupsByGroupId = async (groupId) => {
+  const users = await UserGroup.find({
+    group: groupId,
+  }).select('user');
+  await Promise.all(users.map((user) => deleteUserGroupById(user.user, groupId)));
+  return users;
+};
+
 module.exports = {
   createUserGroup,
   getUserGroupById,
@@ -153,4 +165,5 @@ module.exports = {
   getEmailMembers,
   isJoinedGroup,
   requiredRoleInGroup,
+  deleteUserGroupsByGroupId,
 };

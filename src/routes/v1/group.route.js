@@ -14,8 +14,9 @@ router
 
 router
   .route('/:groupId')
-  .get(auth(), validate(groupValidation.getGroupById), allowLeastRoleInGroup(), groupController.getGroupById)
-  .patch(auth(), validate(groupValidation.updateGroup), groupController.updateGroupById);
+  .get(auth(), validate(groupValidation.getGroupById), allowLeastRoleInGroup(), groupController.getGroupDetailsById)
+  .patch(auth(), validate(groupValidation.updateGroup), groupController.updateGroupById)
+  .delete(auth(), validate(groupValidation.deleteGroup), allowLeastRoleInGroup('owner'), groupController.deleteGroup);
 
 router.post('/:groupId/invite-by-email', auth(), allowLeastRoleInGroup('owner'), groupController.invitePersonToGroup);
 
