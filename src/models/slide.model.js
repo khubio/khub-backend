@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const { slideType, chartType } = require('../config/enum');
-require('mongoose-type-url');
 
 const slideSchema = mongoose.Schema(
   {
@@ -16,7 +15,7 @@ const slideSchema = mongoose.Schema(
       max: 200,
     },
     image: {
-      type: mongoose.SchemaTypes.Url,
+      type: String,
     },
     answers: {
       type: [

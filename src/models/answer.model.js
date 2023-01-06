@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+// require('mongoose-type-url');
 
 const answerSchema = mongoose.Schema(
   {
@@ -18,7 +19,7 @@ const answerSchema = mongoose.Schema(
       trim: true,
     },
     image: {
-      type: mongoose.SchemaTypes.Url,
+      type: String,
     },
     participants: {
       type: [
