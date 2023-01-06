@@ -25,6 +25,9 @@ const createPresentation = async (presentationBody) => {
 const getPresentationsByCreator = async (userId) => {
   const presentations = await Presentation.find({
     creator: userId,
+  }).populate({
+    path: 'creator',
+    select: 'firstName lastName',
   });
   return presentations;
 };

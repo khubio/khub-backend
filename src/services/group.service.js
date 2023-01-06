@@ -33,6 +33,8 @@ const getGroupsByUserId = async (userId, roles) => {
       id: group.group._id,
       name: group.group.name,
       role: group.role,
+      createdAt: group.group.createdAt,
+      updatedAt: group.group.updatedAt,
     };
   });
   return data;

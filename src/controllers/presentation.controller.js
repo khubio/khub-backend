@@ -15,9 +15,10 @@ const getPresentations = catchAsync(async (req, res) => {
     presentationService.getPresentationsByCreator(userId),
     presentationService.getPresentationsByCollaborator(userId),
   ]);
+
   if (roles.split(',').length === 2) {
     res.send([...presentationsOwner, ...presentationsCollaborator]);
-  } else if (roles.split(',').includes('owner')) {
+  } else if (roles.split(',').includes('creator')) {
     res.send(presentationsOwner);
   } else {
     res.send(presentationsCollaborator);
