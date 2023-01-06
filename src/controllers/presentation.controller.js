@@ -3,15 +3,25 @@ const catchAsync = require('../utils/catchAsync');
 const { presentationService } = require('../services');
 
 const createPresentation = catchAsync(async (req, res) => {
-  const creator = req.user.id;
-  const presentation = await presentationService.createPresentation({ ...req.body, creator });
+  const { _id: userId } = req.user;
+  const presentation = await presentationService.createPresentation({ ...req.body, creator: userId });
   res.status(httpStatus.CREATED).send(presentation);
 });
 
-const getPresentationsByCreator = catchAsync(async (req, res) => {
-  const creator = req.user.id;
-  const presentations = await presentationService.getPresentationsByCreator(creator);
-  res.send(presentations);
+const getPresentations = catchAsync(async (req, res) => {
+  const { _id: userId } = req.user;
+  const { roles } = req.query;
+  const [presentationsOwner, presentationsCollaborator] = await Promise.all([
+    presentationService.getPresentationsByCreator(userId),
+    presentationService.getPresentationsByCollaborator(userId),
+  ]);
+  if (roles.split(',').length === 2) {
+    res.send([...presentationsOwner, ...presentationsCollaborator]);
+  } else if (roles.split(',').includes('owner')) {
+    res.send(presentationsOwner);
+  } else {
+    res.send(presentationsCollaborator);
+  }
 });
 
 const getPresentationById = catchAsync(async (req, res) => {
@@ -31,7 +41,7 @@ const deletePresentationById = catchAsync(async (req, res) => {
 
 module.exports = {
   createPresentation,
-  getPresentationsByCreator,
+  getPresentations,
   getPresentationById,
   updatePresentationById,
   deletePresentationById,

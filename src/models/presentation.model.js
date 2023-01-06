@@ -30,7 +30,7 @@ const presentationSchema = mongoose.Schema(
       type: [
         {
           type: mongoose.SchemaTypes.ObjectId,
-          ref: 'User',
+          ref: 'UserGroup',
         },
       ],
       default: [],
@@ -38,15 +38,13 @@ const presentationSchema = mongoose.Schema(
     accessModifier: {
       type: String,
       enum: accessModifier,
-      default: accessModifier.private,
+      default: accessModifier.public,
     },
-    groups: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Group',
-        },
-      ],
+    group: {
+      type: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Group',
+      },
     },
   },
   {

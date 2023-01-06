@@ -16,6 +16,14 @@ const userGroupSchema = mongoose.Schema(
       enum: groupRoles,
       default: 'member',
     },
+    presentationsCollaborated: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Presentation',
+        },
+      ],
+    },
   },
   {
     timeStamps: true,

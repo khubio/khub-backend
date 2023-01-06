@@ -2,14 +2,15 @@ const express = require('express');
 const validate = require('../../middlewares/validate');
 const { presentationController, participantController, slideController, answerController } = require('../../controllers');
 const { presentationValidation, participantValidation, slideValidation, answerValidation } = require('../../validations');
+const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
 // presentation
 router
   .route('/')
-  .get(validate(presentationValidation.getPresentationsByCreator), presentationController.getPresentationsByCreator)
-  .post(validate(presentationValidation.createPresentation), presentationController.createPresentation);
+  .get(auth(), validate(presentationValidation.getPresentations), presentationController.getPresentations)
+  .post(auth(), validate(presentationValidation.createPresentation), presentationController.createPresentation);
 
 router
   .route('/:presentationId')

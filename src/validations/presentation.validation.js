@@ -4,17 +4,12 @@ const { objectId } = require('./custom.validation');
 const createPresentation = {
   body: Joi.object().keys({
     name: Joi.string().required(),
-    type: Joi.string().required().valid('default', 'import'),
-    layout: Joi.string().uri(),
   }),
 };
 
-const getPresentationsByCreator = {
+const getPresentations = {
   query: Joi.object().keys({
-    name: Joi.string(),
-    sortBy: Joi.string(),
-    limit: Joi.number().integer(),
-    page: Joi.number().integer(),
+    roles: Joi.string(),
   }),
 };
 
@@ -43,7 +38,7 @@ const deletePresentationById = {
 
 module.exports = {
   createPresentation,
-  getPresentationsByCreator,
+  getPresentations,
   getPresentationById,
   updatePresentationById,
   deletePresentationById,

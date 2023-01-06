@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Presentation, User } = require('../models');
+const { Presentation, User, UserGroup } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -22,14 +22,23 @@ const createPresentation = async (presentationBody) => {
  * @param {string} creatorId
  * @returns {Promise<QueryResult>}
  */
-const getPresentationsByCreator = async (creatorId) => {
-  const presentations = await Presentation.find({}).populate({
-    path: 'creator',
-    match: {
-      user: creatorId,
-    },
+const getPresentationsByCreator = async (userId) => {
+  const presentations = await Presentation.find({
+    creator: userId,
   });
   return presentations;
+};
+
+const getPresentationsByCollaborator = async (userId) => {
+  const presentations = await UserGroup.find({
+    user: userId,
+  }).populate({
+    path: 'presentationsCollaborated',
+    match: {
+      user: userId,
+    },
+  });
+  return presentations.filter((presentation) => presentation.presentationsCollaborated.length > 0);
 };
 
 /**
@@ -78,6 +87,7 @@ const deletePresentationById = async (id) => {
 module.exports = {
   createPresentation,
   getPresentationsByCreator,
+  getPresentationsByCollaborator,
   getPresentationById,
   updatePresentationById,
   deletePresentationById,
