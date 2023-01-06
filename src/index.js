@@ -1,14 +1,24 @@
 const mongoose = require('mongoose');
+const socketio = require('socket.io');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
+const initSockets = require('./socket');
 
 let server;
+let io;
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
   logger.info('Connected to MongoDB');
   server = app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
   });
+  io = socketio(server, {
+    cors: {
+      origin: '*',
+    },
+    transports: ['websocket', 'polling'],
+  });
+  initSockets(io);
 });
 
 const exitHandler = () => {
