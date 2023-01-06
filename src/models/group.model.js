@@ -16,6 +16,14 @@ const groupSchema = mongoose.Schema(
         },
       ],
     },
+    presentations: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Presentation',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

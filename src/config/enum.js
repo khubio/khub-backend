@@ -1,24 +1,24 @@
-const questionCategory = {
+const slideType = {
   multipleChoice: 'multipleChoice',
-  yesNo: 'yesNo',
-  answer: 'answer',
+  heading: 'heading',
+  paragraph: 'paragraph',
 };
 
-const answerCode = {
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  text: 'text',
+const accessModifier = {
+  public: 'public',
+  group: 'group',
+  private: 'private',
 };
 
-const presentationLayout = {
-  default: 'default',
-  import: 'import',
+const chartType = {
+  bars: 'bars',
+  donut: 'donut',
+  pie: 'pie',
+  dots: 'dots',
 };
 
 module.exports = {
-  questionCategory,
-  answerCode,
-  presentationLayout,
+  slideType,
+  accessModifier,
+  chartType,
 };

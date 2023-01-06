@@ -9,14 +9,10 @@ const participantSchema = mongoose.Schema(
       trim: true,
     },
     user: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'User',
-        },
-      ],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
     },
-    presentation: {
+    presentations: {
       type: [
         {
           type: mongoose.SchemaTypes.ObjectId,
@@ -24,12 +20,14 @@ const participantSchema = mongoose.Schema(
         },
       ],
     },
-    answer: [
-      {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Answer',
-      },
-    ],
+    answers: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Answer',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

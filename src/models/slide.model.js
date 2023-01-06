@@ -1,35 +1,50 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const { questionCategory } = require('../config/enum');
+const { slideType, chartType } = require('../config/enum');
+require('mongoose-type-url');
 
 const slideSchema = mongoose.Schema(
   {
     presentation: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Presentation',
-        },
-      ],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Presentation',
       require: true,
     },
     question: {
       type: String,
       trim: true,
+      max: 200,
     },
     image: {
-      type: String,
+      type: mongoose.SchemaTypes.Url,
     },
-    answers: [
-      {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Answer',
-      },
-    ],
-    category: {
+    answers: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Answer',
+        },
+      ],
+    },
+    type: {
       type: String,
-      enum: questionCategory,
-      default: questionCategory.multipleChoice,
+      enum: slideType,
+      default: slideType.multipleChoice,
+    },
+    chart: {
+      type: String,
+      enum: chartType,
+      default: chartType.bars,
+    },
+    heading: {
+      type: String,
+      trim: true,
+      max: 200,
+    },
+    subHeading: {
+      type: String,
+      trim: true,
+      max: 200,
     },
   },
   {
@@ -40,14 +55,6 @@ const slideSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 slideSchema.plugin(toJSON);
 slideSchema.plugin(paginate);
-
-slideSchema.pre('remove', async function (next) {
-  await Promise.all([
-    this.model('Presentation').update({ _id: { $eq: this.presentation } }, { $pull: { slides: this._id } }, { multi: true }),
-    this.model('Answer').remove({ _id: { $in: this.answers } }, { multi: true }),
-  ]);
-  next();
-});
 
 /**
  * @typedef Slide

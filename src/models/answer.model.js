@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const { answerCode } = require('../config/enum');
 
 const answerSchema = mongoose.Schema(
   {
     slide: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Slide',
-        },
-      ],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Slide',
       require: true,
     },
     status: {
@@ -22,17 +17,17 @@ const answerSchema = mongoose.Schema(
       require: true,
       trim: true,
     },
-    code: {
-      type: String,
-      enum: answerCode,
-      require: true,
+    image: {
+      type: mongoose.SchemaTypes.Url,
     },
-    participant: [
-      {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Participant',
-      },
-    ],
+    participants: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Participant',
+        },
+      ],
+    },
   },
   {
     timestamps: true,
