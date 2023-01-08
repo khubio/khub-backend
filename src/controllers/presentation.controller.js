@@ -1,10 +1,11 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { presentationService } = require('../services');
+const { presentationService, slideService } = require('../services');
 
 const createPresentation = catchAsync(async (req, res) => {
   const { _id: userId } = req.user;
   const presentation = await presentationService.createPresentation({ ...req.body, creator: userId });
+  await slideService.createSlide({ presentation: presentation._id });
   res.status(httpStatus.CREATED).send(presentation);
 });
 

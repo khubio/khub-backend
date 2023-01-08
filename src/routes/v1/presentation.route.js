@@ -21,8 +21,8 @@ router
 // slide
 router
   .route('/:presentationId/slides')
-  .post(validate(slideValidation.createSlides), slideController.createSlides)
-  .put(validate(slideValidation.updateSlides), slideController.updateSlides)
+  .post(slideController.createSlides)
+  .put(slideController.updateSlides)
   .delete(validate(slideValidation.deleteSlides), slideController.deleteSlides);
 
 // participants

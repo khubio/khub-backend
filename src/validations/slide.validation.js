@@ -9,7 +9,6 @@ const createSlides = {
   }),
   body: Joi.object().keys({
     slides: Joi.array().items(Joi.object({
-      id: Joi.string().custom(objectId),
       slideType: Joi.string().valid(...Object.values(slideType)),
       question: Joi.string().trim(),
       answers: Joi.array().items(Joi.object().keys({
