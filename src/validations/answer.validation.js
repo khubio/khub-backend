@@ -3,6 +3,7 @@ const { objectId } = require('./custom.validation');
 
 const createAnswer = {
   params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
     slideId: Joi.string().custom(objectId),
   }),
   body: Joi.object().keys({
@@ -14,6 +15,7 @@ const createAnswer = {
 
 const getAnswersBySlideId = {
   params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
     slideId: Joi.string().custom(objectId),
   }),
   query: Joi.object().keys({
@@ -25,12 +27,15 @@ const getAnswersBySlideId = {
 
 const getAnswerById = {
   params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
+    slideId: Joi.string().custom(objectId),
     answerId: Joi.string().custom(objectId),
   }),
 };
 
 const updateAnswerById = {
   params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
     answerId: Joi.string().custom(objectId),
     slideId: Joi.string().custom(objectId),
   }),

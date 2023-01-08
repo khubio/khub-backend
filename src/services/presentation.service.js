@@ -62,6 +62,7 @@ const getPresentationById = async (id) => {
  * @param {Object} updateBody
  * @returns {Promise<Presentation>}
  */
+
 const updatePresentationById = async (id, updateBody) => {
   const presentation = await getPresentationById(id);
   if (!presentation) {

@@ -46,6 +46,20 @@ answerSchema.pre('remove', async function (next) {
   ]);
   next();
 });
+
+answerSchema.pre('save', async function (next) {
+  await Promise.all([
+    this.model('Participant').update(
+      { _id: { $in: this.participants } },
+      { $addToSet: { answers: this._id } },
+      { multi: true }
+    ),
+    // add answer to slide
+    this.model('Slide').update({ _id: { $eq: this.slide } }, { $addToSet: { answers: this._id } }, { multi: false }),
+  ]);
+  next();
+});
+
 /**
  * @typedef Answer
  */

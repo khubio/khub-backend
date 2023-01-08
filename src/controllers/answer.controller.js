@@ -3,8 +3,8 @@ const catchAsync = require('../utils/catchAsync');
 const { answerService } = require('../services');
 
 const createAnswer = catchAsync(async (req, res) => {
-  const presentation = req.params.presentationId;
-  const answer = await answerService.createAnswer({ ...req.body, presentation });
+  const slide = req.params.slideId;
+  const answer = await answerService.createAnswer({ ...req.body, slide });
   res.status(httpStatus.CREATED).send(answer);
 });
 

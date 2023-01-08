@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
@@ -8,7 +9,7 @@ const createSlide = {
   body: Joi.object().keys({
     question: Joi.string().trim(),
     image: Joi.string().uri(),
-    category: Joi.string().valid('yesNo', 'multipleChoice', 'answer'),
+    category: Joi.string().valid('heading', 'multipleChoice', 'paragraph'),
   }),
 };
 
@@ -25,6 +26,7 @@ const getSlidesByPresentationId = {
 
 const getSlideById = {
   params: Joi.object().keys({
+    presentationId: Joi.string().custom(objectId),
     slideId: Joi.string().custom(objectId),
   }),
 };
@@ -36,9 +38,15 @@ const updateSlideById = {
   }),
   body: Joi.object().keys({
     question: Joi.string().trim(),
+    answers: Joi.array().items(Joi.object().keys({
+      text: Joi.string().trim(),
+      status: Joi.bool(),
+    })),
+    description: Joi.string().trim(),
     image: Joi.string().uri(),
-    category: Joi.string().valid('yesNo', 'multipleChoice', 'answer'),
+    category: Joi.string().valid('heading', 'multipleChoice', 'paragraph'),
   }),
+
 };
 
 const deleteSlideById = {

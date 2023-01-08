@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Slide, Answer } = require('../models');
+const { Answer } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -9,11 +9,6 @@ const ApiError = require('../utils/ApiError');
  */
 const createAnswer = async (answerBody) => {
   const answer = await Answer.create(answerBody);
-  await Slide.findByIdAndUpdate(answerBody.slide, {
-    $push: {
-      answers: answer._id,
-    },
-  });
   return answer;
 };
 

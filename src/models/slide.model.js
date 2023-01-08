@@ -45,11 +45,28 @@ const slideSchema = mongoose.Schema(
       trim: true,
       max: 200,
     },
+    description: {
+      type: String,
+      trim: true,
+      max: 200,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+slideSchema.pre('remove', async function (next) {
+  await Promise.all([
+    this.model('Answer').update({ _id: { $in: this.answers } }, { $pull: { slide: this._id } }, { multi: true }),
+    this.model('Presentation').update(
+      { _id: { $eq: this.presentation } },
+      { $pull: { slides: this._id } },
+      { multi: false }
+    ),
+  ]);
+  next();
+});
 
 // add plugin that converts mongoose to json
 slideSchema.plugin(toJSON);
