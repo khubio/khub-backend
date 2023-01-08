@@ -2,36 +2,28 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { slideService } = require('../services');
 
-const createSlide = catchAsync(async (req, res) => {
+const createSlides = catchAsync(async (req, res) => {
   const presentation = req.params.presentationId;
-  const slide = await slideService.createSlide({ ...req.body, presentation });
-  res.status(httpStatus.CREATED).send(slide);
+  const { slides } = req.body;
+  const newSlides = await Promise.all(slides.map((slide) => slideService.createSlide({ ...slide, presentation })));
+  res.status(httpStatus.CREATED).send(newSlides);
 });
 
-const getSlidesByPresentationId = catchAsync(async (req, res) => {
-  const slides = await slideService.getSlidesByPresentationId(req.params.presentationId);
-  res.send(slides);
+const updateSlides = catchAsync(async (req, res) => {
+  const { slides } = req.body;
+  const { answers, ...updatedSlides } = slides;
+  const newSlides = await Promise.all(updatedSlides.map((slide) => slideService.updateSlideById(slide.id, { ...slide })));
+  res.send(newSlides);
 });
 
-const getSlideById = catchAsync(async (req, res) => {
-  const slide = await slideService.getSlideById(req.params.slideId);
-  res.send(slide);
-});
-
-const updateSlideById = catchAsync(async (req, res) => {
-  const slide = await slideService.updateSlideById(req.params.slideId, req.body);
-  res.send(slide);
-});
-
-const deleteSlideById = catchAsync(async (req, res) => {
-  const slide = await slideService.deleteSlideById(req.params.slideId);
-  res.send(slide);
+const deleteSlides = catchAsync(async (req, res) => {
+  const { slides } = req.body;
+  const deletedSlide = Promise.all(slides.map((slide) => slideService.deleteSlideById(slide)));
+  res.send(deletedSlide);
 });
 
 module.exports = {
-  createSlide,
-  getSlidesByPresentationId,
-  getSlideById,
-  updateSlideById,
-  deleteSlideById,
+  createSlides,
+  updateSlides,
+  deleteSlides,
 };

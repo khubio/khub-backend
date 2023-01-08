@@ -1,7 +1,7 @@
 const express = require('express');
 const validate = require('../../middlewares/validate');
-const { presentationController, participantController, slideController, answerController } = require('../../controllers');
-const { presentationValidation, participantValidation, slideValidation, answerValidation } = require('../../validations');
+const { presentationController, participantController, slideController } = require('../../controllers');
+const { presentationValidation, participantValidation, slideValidation } = require('../../validations');
 const auth = require('../../middlewares/auth');
 
 const router = express.Router();
@@ -21,26 +21,9 @@ router
 // slide
 router
   .route('/:presentationId/slides')
-  .get(validate(slideValidation.getSlidesByPresentationId), slideController.getSlidesByPresentationId)
-  .post(validate(slideValidation.createSlide), slideController.createSlide);
-
-router
-  .route('/:presentationId/slides/:slideId')
-  .get(validate(slideValidation.getSlideById), slideController.getSlideById)
-  .patch(validate(slideValidation.updateSlideById), slideController.updateSlideById)
-  .delete(validate(slideValidation.deleteSlideById), slideController.deleteSlideById);
-
-// answers
-router
-  .route('/:presentationId/slides/:slideId/answers')
-  .get(validate(answerValidation.getAnswersBySlideId), answerController.getAnswersBySlideId)
-  .post(validate(answerValidation.createAnswer), answerController.createAnswer);
-
-router
-  .route('/:presentationId/slides/:slideId/answers/:answerId')
-  .get(validate(answerValidation.getAnswerById), answerController.getAnswerById)
-  .patch(validate(answerValidation.updateAnswerById), answerController.updateAnswerById)
-  .delete(validate(answerValidation.deleteAnswerById), answerController.deleteAnswerById);
+  .post(validate(slideValidation.createSlides), slideController.createSlides)
+  .put(validate(slideValidation.updateSlides), slideController.updateSlides)
+  .delete(validate(slideValidation.deleteSlides), slideController.deleteSlides);
 
 // participants
 router

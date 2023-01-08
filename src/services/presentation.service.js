@@ -52,6 +52,7 @@ const getPresentationsByCollaborator = async (userId) => {
 const getPresentationById = async (id) => {
   const presentation = await Presentation.findById(id).populate({
     path: 'slides',
+    populate: 'answers',
   });
   return presentation;
 };
