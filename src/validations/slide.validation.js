@@ -41,7 +41,7 @@ const updateSlideById = {
     answers: Joi.array().items(Joi.object().keys({
       text: Joi.string().trim(),
       status: Joi.bool(),
-    })),
+    })).default([]),
     description: Joi.string().trim(),
     image: Joi.string().uri(),
     category: Joi.string().valid('heading', 'multipleChoice', 'paragraph'),
