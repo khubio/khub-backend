@@ -5,7 +5,14 @@ const { presentationService, slideService } = require('../services');
 const createPresentation = catchAsync(async (req, res) => {
   const { _id: userId } = req.user;
   const presentation = await presentationService.createPresentation({ ...req.body, creator: userId });
-  await slideService.createSlide({ presentation: presentation._id });
+  const sampleSlide = {
+    id: '',
+    type: 'paragraph',
+    question: 'Welcome to KHUB',
+    description: 'Try your best experience with us',
+    answers: [],
+  };
+  await slideService.createSlide({ presentation: presentation._id, ...sampleSlide });
   res.status(httpStatus.CREATED).send(presentation);
 });
 
