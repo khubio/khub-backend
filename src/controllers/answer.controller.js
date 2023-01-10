@@ -2,36 +2,42 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { answerService } = require('../services');
 
-const createAnswer = catchAsync(async (req, res) => {
+const createAnswers = catchAsync(async (req, res) => {
   const slide = req.params.slideId;
-  const answer = await answerService.createAnswer({ ...req.body, slide });
-  res.status(httpStatus.CREATED).send(answer);
+  const { answers } = req.body;
+  const newAnswers = await Promise.all(
+    answers.map((answer) =>
+      answerService.createAnswer({
+        text: answer.text,
+        status: answer.status,
+        slide,
+      })
+    )
+  );
+  res.status(httpStatus.CREATED).send(newAnswers);
 });
 
-const getAnswersBySlideId = catchAsync(async (req, res) => {
-  const answers = await answerService.getAnswersBySlideId(req.params.slideId);
-  res.send(answers);
+const deleteAnswers = catchAsync(async (req, res) => {
+  const { answers } = req.body;
+  const deletedAnswers = await Promise.all(answers.map((answer) => answerService.deleteAnswerById(answer)));
+  res.send(deletedAnswers);
 });
 
-const getAnswerById = catchAsync(async (req, res) => {
-  const answer = await answerService.getAnswerById(req.params.answerId);
-  res.send(answer);
-});
-
-const updateAnswerById = catchAsync(async (req, res) => {
-  const answer = await answerService.updateAnswerById(req.params.answerId, req.body);
-  res.send(answer);
-});
-
-const deleteAnswerById = catchAsync(async (req, res) => {
-  const answer = await answerService.deleteAnswerById(req.params.answerId);
-  res.send(answer);
+const updateAnswers = catchAsync(async (req, res) => {
+  const { answers } = req.body;
+  const updatedAnswers = await Promise.all(
+    answers.map((answer) =>
+      answerService.updateAnswerById(answer.id, {
+        text: answer.text,
+        status: answer.status,
+      })
+    )
+  );
+  res.send(updatedAnswers);
 });
 
 module.exports = {
-  createAnswer,
-  getAnswersBySlideId,
-  getAnswerById,
-  updateAnswerById,
-  deleteAnswerById,
+  createAnswers,
+  deleteAnswers,
+  updateAnswers,
 };

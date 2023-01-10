@@ -1,6 +1,6 @@
 const express = require('express');
 const validate = require('../../middlewares/validate');
-const { presentationController, participantController, slideController } = require('../../controllers');
+const { presentationController, participantController, slideController, answerController } = require('../../controllers');
 const { presentationValidation, participantValidation, slideValidation } = require('../../validations');
 const auth = require('../../middlewares/auth');
 
@@ -24,6 +24,12 @@ router
   .post(slideController.createSlides)
   .put(slideController.updateSlides)
   .delete(validate(slideValidation.deleteSlides), slideController.deleteSlides);
+
+router
+  .route('/:presentationId/slides/:slideId/answers')
+  .post(answerController.createAnswers)
+  .delete(answerController.deleteAnswers)
+  .put(answerController.updateAnswers);
 
 // participants
 router
