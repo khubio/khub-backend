@@ -58,8 +58,8 @@ const slideSchema = mongoose.Schema(
 
 slideSchema.pre('remove', async function (next) {
   await Promise.all([
-    this.model('Answer').update({ _id: { $in: this.answers } }, { $pull: { slide: this._id } }, { multi: true }),
-    this.model('Presentation').update(
+    this.model('Answer').updateMany({ _id: { $in: this.answers } }, { $pull: { slide: this._id } }, { multi: true }),
+    this.model('Presentation').updateOne(
       { _id: { $eq: this.presentation } },
       { $pull: { slides: this._id } },
       { multi: false }
