@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Slide, Presentation } = require('../models');
+const { Slide, Presentation, Answer } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,13 +8,23 @@ const ApiError = require('../utils/ApiError');
  * @return {Promise<Slide>}
  */
 const createSlide = async (slideBody) => {
-  const slide = await Slide.create(slideBody);
-  await Presentation.findByIdAndUpdate(slideBody.presentation, {
+  const { answers, ...slide } = slideBody;
+  const newSlide = await Slide.create(slide);
+  await Presentation.findByIdAndUpdate(slide.presentation, {
     $push: {
-      slides: slide._id,
+      slides: newSlide._id,
     },
   });
-  return slide;
+  await Promise.all(
+    answers.map((answer) =>
+      Answer.create({
+        slide: newSlide._id,
+        text: answer.text,
+        status: answer.status,
+      })
+    )
+  );
+  return newSlide;
 };
 
 /**

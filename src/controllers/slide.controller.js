@@ -6,7 +6,7 @@ const createSlides = catchAsync(async (req, res) => {
   const presentation = req.params.presentationId;
   const { slides } = req.body;
   const newSlides = await Promise.all(
-    slides.map(({ id, key, ...slide }) => slideService.createSlide({ slide, presentation }))
+    slides.map(({ id, key, ...slide }) => slideService.createSlide({ ...slide, presentation }))
   );
   res.status(httpStatus.CREATED).send(newSlides);
 });

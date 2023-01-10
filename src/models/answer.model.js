@@ -15,8 +15,6 @@ const answerSchema = mongoose.Schema(
     },
     text: {
       type: String,
-      require: true,
-      trim: true,
     },
     image: {
       type: String,
