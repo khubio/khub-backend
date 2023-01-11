@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 const express = require('express');
 const validate = require('../../middlewares/validate');
-const { presentationController, participantController, slideController, answerController } = require('../../controllers');
-const { presentationValidation, participantValidation, slideValidation } = require('../../validations');
+const { presentationController, slideController, answerController, chatController, questionController } = require('../../controllers');
+const { presentationValidation, slideValidation } = require('../../validations');
 const auth = require('../../middlewares/auth');
 
 const router = express.Router();
@@ -31,18 +32,15 @@ router
   .delete(answerController.deleteAnswers)
   .put(answerController.updateAnswers);
 
-// participants
 router
-  .route('/:presentationId/participants')
-  .get(
-    validate(participantValidation.getParticipantsByPresentationId),
-    participantController.getParticipantsByPresentationId
-  )
-  .post(validate(participantValidation.createParticipant), participantController.createParticipant);
+  .route('/:presentationId/chats')
+  .get(chatController.getChats)
+  .post(chatController.createChat);
 
 router
-  .route('/:presentationId/participants/:participantId')
-  .get(validate(participantValidation.getParticipantById), participantController.getParticipantById)
-  .delete(validate(participantValidation.deleteParticipantById), participantController.deleteParticipantById);
+  .route('/presentationId/questions')
+  .get(questionController.getQuestions)
+  .post(questionController.createQuestion)
+  .put(questionController.updateQuestion);
 
 module.exports = router;

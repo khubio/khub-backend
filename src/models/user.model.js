@@ -73,14 +73,6 @@ const userSchema = mongoose.Schema(
         },
       ],
     },
-    participants: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Participant',
-        },
-      ],
-    },
   },
   {
     timestamps: true,

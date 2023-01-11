@@ -8,9 +8,18 @@ const chatSchema = mongoose.Schema(
       require: true,
       trim: true,
     },
-    participant: {
+    presentation: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Participant',
+      ref: 'Presentation',
+    },
+    username: {
+      type: String,
+      trim: true,
+      require: true,
+    },
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
     },
   },
   {

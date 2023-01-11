@@ -30,7 +30,7 @@ const presentationSchema = mongoose.Schema(
       type: [
         {
           type: mongoose.SchemaTypes.ObjectId,
-          ref: 'UserGroup',
+          ref: 'User',
         },
       ],
       default: [],

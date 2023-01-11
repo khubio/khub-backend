@@ -19,13 +19,9 @@ const answerSchema = mongoose.Schema(
     image: {
       type: String,
     },
-    participants: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Participant',
-        },
-      ],
+    answerCount: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -39,7 +35,6 @@ answerSchema.plugin(paginate);
 
 answerSchema.pre('remove', async function (next) {
   await Promise.all([
-    this.model('Participant').update({ _id: { $in: this.participants } }, { $pull: { answers: this._id } }, { multi: true }),
     this.model('Slide').update({ _id: { $eq: this.slide } }, { $pull: { answers: this._id } }, { multi: false }),
   ]);
   next();
@@ -47,12 +42,6 @@ answerSchema.pre('remove', async function (next) {
 
 answerSchema.pre('save', async function (next) {
   await Promise.all([
-    this.model('Participant').update(
-      { _id: { $in: this.participants } },
-      { $addToSet: { answers: this._id } },
-      { multi: true }
-    ),
-    // add answer to slide
     this.model('Slide').update({ _id: { $eq: this.slide } }, { $addToSet: { answers: this._id } }, { multi: false }),
   ]);
   next();

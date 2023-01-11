@@ -8,9 +8,14 @@ const questionSchema = mongoose.Schema(
       require: true,
       trim: true,
     },
-    participant: {
+    presentation: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Participant',
+      ref: 'Presentation',
+    },
+    username: {
+      type: String,
+      require: true,
+      trim: true,
     },
     answerBy: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -20,13 +25,13 @@ const questionSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    votes: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Participant',
-        },
-      ],
+    voteNumber: {
+      type: Number,
+      default: 0,
+    },
+    user: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
     },
   },
   {

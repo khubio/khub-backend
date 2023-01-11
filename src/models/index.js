@@ -1,7 +1,6 @@
 module.exports.Answer = require('./answer.model');
 module.exports.Chat = require('./chat.model');
 module.exports.Group = require('./group.model');
-module.exports.Participant = require('./participant.model');
 module.exports.Presentation = require('./presentation.model');
 module.exports.Question = require('./question.model');
 module.exports.Slide = require('./slide.model');
