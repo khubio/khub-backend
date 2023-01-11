@@ -25,8 +25,8 @@ const updatePresentationById = {
   }),
   body: Joi.object().keys({
     name: Joi.string(),
-    layout: Joi.string().uri(),
-    type: Joi.string().valid('default', 'import'),
+    accessModifier: Joi.string(),
+    group: Joi.string().custom(objectId),
   }),
 };
 

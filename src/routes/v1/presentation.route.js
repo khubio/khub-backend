@@ -22,6 +22,8 @@ router
 
 router.post('/:presentationId/collaborators/add', auth(), presentationController.addCollaborator);
 router.post('/:presentationId/collaborators/delete', auth(), presentationController.removeCollaborator);
+
+router.patch('/:presentationId/updateAccessModifier', auth(), presentationController.updateAccessModifier);
 // slide
 router
   .route('/:presentationId/slides')

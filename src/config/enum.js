@@ -7,6 +7,7 @@ const slideType = {
 const accessModifier = {
   public: 'public',
   group: 'group',
+  private: 'private',
 };
 
 const chartType = {
