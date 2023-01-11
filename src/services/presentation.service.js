@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Presentation, User, UserGroup } = require('../models');
+const { Presentation, User } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -25,25 +25,22 @@ const createPresentation = async (presentationBody) => {
 const getPresentationsByCreator = async (userId) => {
   const presentations = await Presentation.find({
     creator: userId,
-  }).populate({
-    path: 'creator',
-    select: 'firstName lastName',
   });
   return presentations;
 };
 
 const getPresentationsByCollaborator = async (userId) => {
-  const presentations = await UserGroup.find({
-    user: userId,
+  const collaborator = await User.findById({
+    _id: userId,
   }).populate({
-    path: 'presentationsCollaborated',
-    match: {
-      user: userId,
+    path: 'collaboratePresentations',
+    populate: {
+      path: 'creator',
+      select: 'firstName lastName',
     },
   });
-  return presentations.filter((presentation) => presentation.presentationsCollaborated.length > 0);
+  return collaborator.collaboratePresentations;
 };
-
 /**
  * Get presentation by id
  * @param {ObjectId} id

@@ -19,18 +19,17 @@ const createPresentation = catchAsync(async (req, res) => {
 const getPresentations = catchAsync(async (req, res) => {
   const { _id: userId } = req.user;
   const { roles } = req.query;
-  const [presentationsOwner, presentationsCollaborator] = await Promise.all([
-    presentationService.getPresentationsByCreator(userId),
-    presentationService.getPresentationsByCollaborator(userId),
-  ]);
-
-  if (roles.split(',').length === 2) {
-    res.send([...presentationsOwner, ...presentationsCollaborator]);
-  } else if (roles.split(',').includes('creator')) {
-    res.send(presentationsOwner);
-  } else {
-    res.send(presentationsCollaborator);
+  const rolesSplit = roles.split(',');
+  let presentationsOwner = [];
+  let presentationsCollaborator = [];
+  if (rolesSplit.includes('creator')) {
+    presentationsOwner = await presentationService.getPresentationsByCreator(userId);
   }
+  if (rolesSplit.includes('collaborator')) {
+    presentationsCollaborator = await presentationService.getPresentationsByCollaborator(userId);
+  }
+
+  res.send([presentationsOwner, presentationsCollaborator]);
 });
 
 const getPresentationById = catchAsync(async (req, res) => {
