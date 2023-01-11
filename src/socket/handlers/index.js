@@ -105,6 +105,10 @@ const handlers = (io, socket) => {
     }
   });
 
+  socket.on('message', (data) => {
+    io.emit('messageResponse', data);
+  });
+
   socket.on('disconnection', () => {
     if (indexOfBySocketId(presentations, socket.id)) {
       presentations.pop(indexOfBySocketId(presentations, socket.id));
