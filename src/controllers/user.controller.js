@@ -39,6 +39,12 @@ const changePassword = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const checkUserByEmail = catchAsync(async (req, res) => {
+  const { email } = req.query;
+  const user = await userService.getUserByEmail(email);
+  res.send(!!user);
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -46,4 +52,5 @@ module.exports = {
   updateUser,
   deleteUser,
   changePassword,
+  checkUserByEmail,
 };

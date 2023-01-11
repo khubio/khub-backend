@@ -47,10 +47,26 @@ const deletePresentationById = catchAsync(async (req, res) => {
   res.send(presentation);
 });
 
+const addCollaborator = catchAsync(async (req, res) => {
+  const { presentationId } = req.params;
+  const { email } = req.body;
+  const presentation = await presentationService.addCollaborator(presentationId, email);
+  res.send(presentation);
+});
+
+const removeCollaborator = catchAsync(async (req, res) => {
+  const { presentationId } = req.params;
+  const { email } = req.body;
+  await presentationService.removeCollaborator(presentationId, email);
+  res.send();
+});
+
 module.exports = {
   createPresentation,
   getPresentations,
   getPresentationById,
   updatePresentationById,
   deletePresentationById,
+  addCollaborator,
+  removeCollaborator,
 };
