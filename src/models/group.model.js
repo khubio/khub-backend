@@ -16,13 +16,9 @@ const groupSchema = mongoose.Schema(
         },
       ],
     },
-    presentations: {
-      type: [
-        {
-          type: mongoose.SchemaTypes.ObjectId,
-          ref: 'Presentation',
-        },
-      ],
+    presentation: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Presentation',
     },
   },
   {

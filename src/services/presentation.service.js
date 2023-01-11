@@ -139,14 +139,19 @@ const removeCollaborator = async (presentationId, email) => {
 
 const updateAccessModifier = async (presentationId, accessModifier, group) => {
   if (group) {
+    await Presentation.findOneAndUpdate(
+      { group },
+      {
+        accessModifier: 'private',
+        group: null,
+      }
+    );
     const presentation = await Presentation.findByIdAndUpdate(presentationId, {
       accessModifier,
       group,
     });
     await Group.findByIdAndUpdate(group, {
-      $push: {
-        presentations: presentationId,
-      },
+      presentation: presentationId,
     });
     return presentation;
   }
@@ -154,14 +159,6 @@ const updateAccessModifier = async (presentationId, accessModifier, group) => {
     accessModifier,
     group: null,
   });
-
-  if (presentation.group) {
-    await Group.findByIdAndUpdate(presentation.group, {
-      $pull: {
-        presentation: presentationId,
-      },
-    });
-  }
   return presentation;
 };
 
