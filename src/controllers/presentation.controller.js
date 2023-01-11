@@ -68,6 +68,13 @@ const updateAccessModifier = catchAsync(async (req, res) => {
   res.send(presentation);
 });
 
+const getAccessPresentation = catchAsync(async (req, res) => {
+  const { presentationId } = req.params;
+  const presentation = await presentationService.getPresentationById(presentationId);
+  const { accessModifier, group } = presentation;
+  res.send({ accessModifier, group });
+});
+
 module.exports = {
   createPresentation,
   getPresentations,
@@ -77,4 +84,5 @@ module.exports = {
   addCollaborator,
   removeCollaborator,
   updateAccessModifier,
+  getAccessPresentation,
 };

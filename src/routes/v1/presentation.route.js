@@ -48,4 +48,6 @@ router
   .post(questionController.createQuestion)
   .put(questionController.updateQuestion);
 
+router.get('/:presentationId/getAccess', presentationController.getAccessPresentation);
+
 module.exports = router;
