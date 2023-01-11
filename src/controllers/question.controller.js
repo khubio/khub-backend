@@ -9,9 +9,9 @@ const getQuestions = catchAsync(async (req, res) => {
 });
 
 const createQuestion = catchAsync(async (req, res) => {
-  const { username, message, userId } = req.body;
+  const { username, text, userId } = req.body;
   const { presentationId } = req.params;
-  const question = await questionService.createQuestion(presentationId, message, username, userId || null);
+  const question = await questionService.createQuestion(presentationId, text, username, userId || null);
   res.status(httpStatus.CREATED).send(question);
 });
 

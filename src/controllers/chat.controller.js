@@ -9,9 +9,9 @@ const getChats = catchAsync(async (req, res) => {
 });
 
 const createChat = catchAsync(async (req, res) => {
-  const { username, message, userId } = req.body;
+  const { username, text, userId } = req.body;
   const { presentationId } = req.params;
-  const chat = await chatService.createChat(presentationId, message, username, userId || null);
+  const chat = await chatService.createChat(presentationId, text, username, userId || null);
   res.status(httpStatus.CREATED).send(chat);
 });
 

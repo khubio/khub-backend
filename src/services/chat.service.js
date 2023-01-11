@@ -1,20 +1,21 @@
 const { Chat } = require('../models');
 
 const getChats = async (presentationId) => {
-  const chats = await Chat.find({ presentation: presentationId }).sort({ createdAt: -1 });
+  const chats = await Chat.find({ presentation: presentationId }).sort({ createdAt: 1 });
   return chats;
 };
 
-const createChat = async (presentationId, message, username, userId = null) => {
+const createChat = async (presentationId, text, username, userId = null) => {
   const chat = await Chat.create({
     presentation: presentationId,
-    message,
+    text,
     username,
     user: userId,
   });
   return chat;
 };
-exports.module = {
+
+module.exports = {
   getChats,
   createChat,
 };

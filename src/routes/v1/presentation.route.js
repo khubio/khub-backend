@@ -36,14 +36,14 @@ router
   .put(auth(), answerController.updateAnswers);
 
 router
-  .route(auth(),'/:presentationId/chats')
-  .get(auth(),chatController.getChats)
-  .post(auth(),chatController.createChat);
+  .route('/:presentationId/chats')
+  .get(chatController.getChats)
+  .post(chatController.createChat);
 
 router
   .route('/:presentationId/questions')
-  .get(auth(),questionController.getQuestions)
-  .post(auth(),questionController.createQuestion)
-  .put(auth(),questionController.updateQuestion);
+  .get(questionController.getQuestions)
+  .post(questionController.createQuestion)
+  .put(questionController.updateQuestion);
 
 module.exports = router;

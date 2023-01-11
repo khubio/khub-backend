@@ -1,14 +1,14 @@
 const { Question } = require('../models');
 
 const getQuestions = async (presentationId) => {
-  const questions = await Question.find({ presentation: presentationId }).sort({ createdAt: -1 });
+  const questions = await Question.find({ presentation: presentationId }).sort({ createdAt: 1 });
   return questions;
 };
 
-const createQuestion = async (presentationId, message, username, userId = null) => {
+const createQuestion = async (presentationId, text, username, userId = null) => {
   const question = await Question.create({
     presentation: presentationId,
-    message,
+    text,
     username,
     user: userId,
   });
@@ -16,11 +16,11 @@ const createQuestion = async (presentationId, message, username, userId = null) 
 };
 
 const updateQuestion = async (questionId, questionBody) => {
-  const question = await Question.findByIdAnUpdate(questionId, questionBody);
+  const question = await Question.findByIdAndUpdate(questionId, questionBody, { new: true });
   return question;
 };
 
-exports.module = {
+module.exports = {
   getQuestions,
   createQuestion,
   updateQuestion,

@@ -3,7 +3,7 @@ const { toJSON, paginate } = require('./plugins');
 
 const chatSchema = mongoose.Schema(
   {
-    message: {
+    text: {
       type: String,
       require: true,
       trim: true,

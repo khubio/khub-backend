@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 const { users, messageBoxes, questionBoxes, presentations, participants } = require('../models');
 const logger = require('../../config/logger');
+const { chatService, questionService } = require('../../services');
+// const { questionService } = require('../../services');
 
 const indexOfBySocketId = (list, socketId) => {
   for (let i = 0; i < list.length; i += 1) {
@@ -105,8 +107,33 @@ const handlers = (io, socket) => {
     }
   });
 
-  socket.on('message', (data) => {
-    io.emit('messageResponse', data);
+  socket.on('message', async ({ presentationId, message }) => {
+    if (message.presentationId === presentationId) {
+      io.emit('messageResponse', message);
+      const { text, author } = message;
+      await chatService.createChat(presentationId, text, author.username, author.id);
+    }
+  });
+
+  socket.on('sendCurrentSlide', (data) => {
+    io.emit('receiveCurrentSlide', data);
+  });
+
+  // socket.on('sendQuestion', (data) => {
+  //   io.emit('receiveQuestion', data);
+  // });
+
+  socket.on('sendQuestion', async ({ presentationId, question }) => {
+    if (question.presentationId === presentationId) {
+      const { username, text, userId } = question;
+      const newQuestion = await questionService.createQuestion(presentationId, text, username, userId);
+      io.emit('receiveQuestion', newQuestion);
+    }
+  });
+
+  socket.on('updateVoteQuestion', async (question) => {
+    const { id, ...questionBody } = question;
+    await questionService.updateQuestion(question.id, questionBody);
   });
 
   socket.on('disconnection', () => {
