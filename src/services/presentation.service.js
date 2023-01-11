@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Presentation, User } = require('../models');
+const { Presentation, User, Group } = require('../models');
 const { deleteSlideById } = require('./slide.service');
 const { getUserByEmail } = require('./user.service');
 const ApiError = require('../utils/ApiError');
@@ -137,6 +137,34 @@ const removeCollaborator = async (presentationId, email) => {
   return updatedPresentation;
 };
 
+const updateAccessModifier = async (presentationId, accessModifier, group) => {
+  if (group) {
+    const presentation = await Presentation.findByIdAndUpdate(presentationId, {
+      accessModifier,
+      group,
+    });
+    await Group.findByIdAndUpdate(group, {
+      $push: {
+        presentations: presentationId,
+      },
+    });
+    return presentation;
+  }
+  const presentation = await Presentation.findByIdAndUpdate(presentationId, {
+    accessModifier,
+    group: null,
+  });
+
+  if (presentation.group) {
+    await Group.findByIdAndUpdate(presentation.group, {
+      $pull: {
+        presentation: presentationId,
+      },
+    });
+  }
+  return presentation;
+};
+
 module.exports = {
   createPresentation,
   getPresentationsByCreator,
@@ -146,4 +174,5 @@ module.exports = {
   deletePresentationById,
   addCollaborator,
   removeCollaborator,
+  updateAccessModifier,
 };
