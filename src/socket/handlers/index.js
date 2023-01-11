@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 const { users, messageBoxes, questionBoxes, presentations, participants } = require('../models');
 const logger = require('../../config/logger');
-const { chatService, questionService } = require('../../services');
+const { chatService, questionService, answerService } = require('../../services');
 // const { questionService } = require('../../services');
 
 const indexOfBySocketId = (list, socketId) => {
@@ -98,14 +98,14 @@ const handlers = (io, socket) => {
     }
   });
 
-  socket.on('answerQuestion', (answerIndex) => {
-    const participant = participants.filter((p) => p.socketId === socket.id)[0];
-    for (const presentation of presentations) {
-      if (participant.presentationId && participant.presentationId === presentation.presentationId) {
-        io.to(presentation.socketId).emit('answeredQuestion', answerIndex);
-      }
-    }
-  });
+  // socket.on('answerQuestion', (answerIndex) => {
+  //   const participant = participants.filter((p) => p.socketId === socket.id)[0];
+  //   for (const presentation of presentations) {
+  //     if (participant.presentationId && participant.presentationId === presentation.presentationId) {
+  //       io.to(presentation.socketId).emit('answeredQuestion', answerIndex);
+  //     }
+  //   }
+  // });
 
   socket.on('message', async ({ presentationId, message }) => {
     if (message.presentationId === presentationId) {
@@ -129,6 +129,12 @@ const handlers = (io, socket) => {
       const newQuestion = await questionService.createQuestion(presentationId, text, username, userId);
       io.emit('receiveQuestion', newQuestion);
     }
+  });
+
+  socket.on('sendAnswer', async (answer) => {
+    const { id, ...answerBody } = answer;
+    const updatedAnswer = await answerService.updateAnswerById(id, answerBody);
+    io.emit('receiveAnswer', updatedAnswer);
   });
 
   socket.on('updateVoteQuestion', async (question) => {

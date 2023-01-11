@@ -36,9 +36,9 @@ router
   .put(auth(), answerController.updateAnswers);
 
 router
-  .route(auth(),'/:presentationId/chats')
-  .get(auth(),chatController.getChats)
-  .post(auth(),chatController.createChat);
+  .route('/:presentationId/chats')
+  .get(chatController.getChats)
+  .post(chatController.createChat);
 
 router
   .route('/:presentationId/questions')

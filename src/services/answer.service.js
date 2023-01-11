@@ -50,7 +50,6 @@ const updateAnswerById = async (id, updateBody) => {
   if (!answer) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Answer not found');
   }
-
   Object.assign(answer, updateBody);
   await answer.save();
   return answer;
