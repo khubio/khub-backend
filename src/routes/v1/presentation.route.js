@@ -38,7 +38,7 @@ router
   .post(chatController.createChat);
 
 router
-  .route('/presentationId/questions')
+  .route('/:presentationId/questions')
   .get(questionController.getQuestions)
   .post(questionController.createQuestion)
   .put(questionController.updateQuestion);

@@ -8,3 +8,4 @@ module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.userGroupService = require('./usergroup.service');
 module.exports.chatService = require('./chat.service');
+module.exports.questionService = require('./question.service');
