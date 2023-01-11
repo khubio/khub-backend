@@ -52,6 +52,18 @@ const presentationSchema = mongoose.Schema(
   }
 );
 
+presentationSchema.pre('remove', async function (next) {
+  await Promise.all([
+    this.model('User').update({ _id: { $eq: this.creator } }, { $pull: { presentations: this._id } }, { multi: false }),
+    this.model('User').update(
+      { _id: { $in: this.collaborators } },
+      { $pull: { collaboratePresentations: this._id } },
+      { multi: true }
+    ),
+  ]);
+  next();
+});
+
 // add plugin that converts mongoose to json
 presentationSchema.plugin(toJSON);
 presentationSchema.plugin(paginate);

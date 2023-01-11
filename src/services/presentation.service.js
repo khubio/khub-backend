@@ -1,5 +1,7 @@
 const httpStatus = require('http-status');
-const { Presentation, User, UserGroup } = require('../models');
+const { Presentation, User } = require('../models');
+const { deleteSlideById } = require('./slide.service');
+const { getUserByEmail } = require('./user.service');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -25,35 +27,37 @@ const createPresentation = async (presentationBody) => {
 const getPresentationsByCreator = async (userId) => {
   const presentations = await Presentation.find({
     creator: userId,
-  }).populate({
-    path: 'creator',
-    select: 'firstName lastName',
   });
   return presentations;
 };
 
 const getPresentationsByCollaborator = async (userId) => {
-  const presentations = await UserGroup.find({
-    user: userId,
+  const collaborator = await User.findById({
+    _id: userId,
   }).populate({
-    path: 'presentationsCollaborated',
-    match: {
-      user: userId,
+    path: 'collaboratePresentations',
+    populate: {
+      path: 'creator',
+      select: 'firstName lastName',
     },
   });
-  return presentations.filter((presentation) => presentation.presentationsCollaborated.length > 0);
+  return collaborator.collaboratePresentations;
 };
-
 /**
  * Get presentation by id
  * @param {ObjectId} id
  * @return {Promise<Presentation>}
  */
 const getPresentationById = async (id) => {
-  const presentation = await Presentation.findById(id).populate({
-    path: 'slides',
-    populate: 'answers',
-  });
+  const presentation = await Presentation.findById(id)
+    .populate({
+      path: 'slides',
+      populate: 'answers',
+    })
+    .populate({
+      path: 'collaborators',
+      select: 'email',
+    });
   return presentation;
 };
 
@@ -85,8 +89,52 @@ const deletePresentationById = async (id) => {
   if (!presentation) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Presentation not found');
   }
+  await Promise.all(presentation.slides.map((slide) => deleteSlideById(slide._id)));
   await presentation.remove();
   return presentation;
+};
+
+const addCollaborator = async (id, email) => {
+  const presentation = await getPresentationById(id);
+  if (!presentation) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Presentation not found');
+  }
+  const user = await getUserByEmail(email);
+  if (String(presentation.creator) === String(user._id)) {
+    throw new ApiError(httpStatus.CONFLICT, "This is owner's email");
+  }
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const updatedPresentation = await Presentation.findByIdAndUpdate(presentation._id, {
+    $push: {
+      collaborators: user._id,
+    },
+  });
+  await User.findByIdAndUpdate(user._id, {
+    $push: {
+      collaboratePresentations: presentation._id,
+    },
+  });
+  return updatedPresentation;
+};
+
+const removeCollaborator = async (presentationId, email) => {
+  const user = await getUserByEmail(email);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const updatedPresentation = await Presentation.findByIdAndUpdate(presentationId, {
+    $pull: {
+      collaborators: user._id,
+    },
+  });
+  await User.findByIdAndUpdate(user._id, {
+    $pull: {
+      collaboratePresentations: presentationId,
+    },
+  });
+  return updatedPresentation;
 };
 
 module.exports = {
@@ -96,4 +144,6 @@ module.exports = {
   getPresentationById,
   updatePresentationById,
   deletePresentationById,
+  addCollaborator,
+  removeCollaborator,
 };

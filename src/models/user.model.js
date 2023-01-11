@@ -73,6 +73,14 @@ const userSchema = mongoose.Schema(
         },
       ],
     },
+    collaboratePresentations: {
+      type: [
+        {
+          type: mongoose.SchemaTypes.ObjectId,
+          ref: 'Presentation',
+        },
+      ],
+    },
   },
   {
     timestamps: true,
