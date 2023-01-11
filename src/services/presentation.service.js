@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
 const { Presentation, User } = require('../models');
+const { deleteSlideById } = require('./slide.service');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -82,6 +83,7 @@ const deletePresentationById = async (id) => {
   if (!presentation) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Presentation not found');
   }
+  await Promise.all(presentation.slides.map((slide) => deleteSlideById(slide._id)));
   await presentation.remove();
   return presentation;
 };
